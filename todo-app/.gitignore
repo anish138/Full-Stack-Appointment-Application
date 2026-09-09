@@ -50,6 +50,5 @@ src/videos
 # Local file
 API.cjs
 db.json
-README.md
 todo-application.txt
 video.json
