@@ -114,7 +114,7 @@ export function IndexContext() {
                 <Routes>
                     <Route path="/" element={<Home />} />
                     <Route path="login" element={<Login className="d-flex justify-content-end mt-4" width="w-25 ms-3 mt-4" text="Login User" icone="bi bi-person-fill" />} />
-                    <Route path="register" element={<Register className="d-flex justify-content-end mt-4" width="w-25 ms-3 mt-4" text="Login User" icone="bi bi-person-fill" />} />
+                    <Route path="register" element={<Register className="d-flex justify-content-end mt-4" width="w-25 ms-3 mt-4" text="Register User" icone="bi bi-person-fill" />} />
                     <Route path="Dashboard" element={<Dashboard />}>
                         <Route index element={<Appointments />} />
                         <Route path="appointments" element={<Appointments />} />

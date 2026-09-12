@@ -1,10 +1,12 @@
-import {  useState } from "react";
+import { useState } from "react";
 import { Outlet } from "react-router-dom"
 import { useNavigate } from "react-router-dom";
-
 import axios from "axios";
+import { useSelector } from "react-redux";
+import { Calendar } from "./calendar";
 
 export function Dashboard() {
+
 
 
     const [search, setSearch] = useState("");
@@ -34,6 +36,10 @@ export function Dashboard() {
 
     }
 
+
+    const { shareappoinments, appoinmentscount } = useSelector((state) => state.sharedata)
+
+
     return (
         <div>
             <div className="row container-fluid">
@@ -45,7 +51,8 @@ export function Dashboard() {
                         </div>
                     </div>
                     <div className="mt-5 mb-3">
-                        <button className="btn btn-outline-primary"> Calaender <span className="bi bi-calendar-date "></span></button>
+                        <button className="btn btn-outline-primary"data-bs-toggle="modal" data-bs-target="#calendarmod"> Calendar <span className="bi bi-calendar-date "></span></button>
+                        <Calendar/>
                     </div>
                     <div className="mb-3">
                         <button className="btn btn-outline-primary"> Projects <span className="bi bi-folder-fill"></span></button>
@@ -103,7 +110,36 @@ export function Dashboard() {
                                             <button className="btn btn-close" data-bs-dismiss="offcanvas"></button>
                                         </div>
                                         <div className="offcanvas-body">
+                                            <table className="table table-hover">
+                                                <thead>
+                                                    <tr>
+                                                        <th>Title</th>
+                                                        <th>Appointments</th>
+                                                        <th>Action</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
 
+                                                    {
+
+                                                        shareappoinments.map(data =>
+                                                            <tr key={data._id}>
+                                                                <td >{data.title}</td>
+                                                                <td>{data.description}</td>
+                                                                <td>
+                                                                    <button className="btn btn-outline-danger"><span className="bi bi-trash"></span></button>
+                                                                </td>
+                                                            </tr>
+                                                        )
+                                                    }
+
+                                                </tbody>
+                                                <tfoot>
+                                                    <tr>
+                                                        <td className="bg-warning " >Total Appointment:{appoinmentscount}</td>
+                                                    </tr>
+                                                </tfoot>
+                                            </table>
                                         </div>
                                         <div className="offcanvas-footer">
 

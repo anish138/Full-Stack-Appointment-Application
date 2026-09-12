@@ -1,14 +1,27 @@
 import { useNavigate, useOutletContext } from "react-router-dom"
 import { useContext } from "react";
 import UserContext from "./indexcontext";
+import { useDispatch} from "react-redux"
+import { addtoshare } from "./taskslice";
+
 
 export function Appointments() {
 
     const Search = useOutletContext();
 
+    const dispatch = useDispatch()
+
     const navigate = useNavigate()
 
     const { appointments,delappointment } = useContext(UserContext)
+
+    const shareAppointment = (appointment)=>{
+
+        alert("Appoinment Share Succussfully.....")
+
+        dispatch(addtoshare(appointment));
+
+    }
 
 
     return (
@@ -39,6 +52,7 @@ export function Appointments() {
 
                                                 <button className="btn btn-outline-danger" onClick={()=>delappointment(appointment._id)} ><span className="bi bi-trash"></span></button>
                                                 <button className="btn btn-outline-warning mx-2" onClick={()=>navigate("/Dashboard/editappointments/" + appointment._id)}><span className="bi bi-pen"></span></button>
+                                                <button className="btn btn-outline-primary" onClick={()=>shareAppointment(appointment)}><span className="bi bi-arrow-up-right-square"></span></button>
 
                                             </td>
                                         </tr>
