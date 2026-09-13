@@ -51,8 +51,8 @@ export function Dashboard() {
                         </div>
                     </div>
                     <div className="mt-5 mb-3">
-                        <button className="btn btn-outline-primary"data-bs-toggle="modal" data-bs-target="#calendarmod"> Calendar <span className="bi bi-calendar-date "></span></button>
-                        <Calendar/>
+                        <button className="btn btn-outline-primary" data-bs-toggle="modal" data-bs-target="#calendarmod"> Calendar <span className="bi bi-calendar-date "></span></button>
+                        <Calendar />
                     </div>
                     <div className="mb-3">
                         <button className="btn btn-outline-primary"> Projects <span className="bi bi-folder-fill"></span></button>
@@ -81,6 +81,9 @@ export function Dashboard() {
                         </div>
                         <div>
                             <button className="btn btn-outline-primary" onClick={SingOutClick}><span className="bi bi-person-circle"> Sing Out</span></button>
+                        </div>
+                        <div>
+                            <button className="btn btn-outline-primary" ><span className="bi bi-moon-stars-fill"></span></button>
                         </div>
                     </div>
 
