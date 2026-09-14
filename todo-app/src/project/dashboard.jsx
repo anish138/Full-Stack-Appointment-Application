@@ -4,9 +4,12 @@ import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { useSelector } from "react-redux";
 import { Calendar } from "./calendar";
+import UserContext from "./indexcontext";
+import { useContext } from "react";
 
 export function Dashboard() {
 
+    const {setToggle,toggle} = useContext(UserContext)
 
 
     const [search, setSearch] = useState("");
@@ -46,7 +49,7 @@ export function Dashboard() {
 
                 <div className="col-2 mt-3">
                     <div>
-                        <div className="bg-light p-2">
+                        <div className={`${toggle?"bg-body-secondary":"bg-light"} p-2`}>
                             <h2 className="fs-3">! Hello</h2>
                         </div>
                     </div>
@@ -66,7 +69,7 @@ export function Dashboard() {
                 </div>
 
                 <div className="col-10 mt-3">
-                    <div className="bg-light d-flex justify-content-between p-2">
+                    <div className={`${toggle?"bg-body-secondary":"bg-light"} d-flex justify-content-between p-2`}>
                         <div>
                             <h2 className="fs-3">Dashboard</h2>
                         </div>
@@ -83,12 +86,12 @@ export function Dashboard() {
                             <button className="btn btn-outline-primary" onClick={SingOutClick}><span className="bi bi-person-circle"> Sing Out</span></button>
                         </div>
                         <div>
-                            <button className="btn btn-outline-primary" ><span className="bi bi-moon-stars-fill"></span></button>
+                            <button className="btn btn-outline-primary" onClick={()=> setToggle(!toggle)}><span className={`${toggle?"bi bi-sun-fill":"bi bi-moon-fill"}`}></span></button>
                         </div>
                     </div>
 
                     <div className="mt-5">
-                        <div className="bg-light p-3">
+                        <div className={`${toggle?"bg-body-secondary":"bg-light"} p-3`}>
                             <div className="d-flex justify-content-between">
                                 <div className="d-flex" style={{ width: "300px" }}>
                                     <select className="form-select ">

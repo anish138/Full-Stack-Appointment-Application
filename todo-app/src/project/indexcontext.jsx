@@ -21,10 +21,12 @@ export function IndexContext() {
 
     const [appointments, setAppointments] = useState([{ title: null, description: null, date: null, userId: null, _id: null }])  //appointment data save
 
-    const[refresh,setRefresh] = useState(0)
+    const [refresh, setRefresh] = useState(0)
 
     const location = useLocation()   // iska use location path provide karata hai 
-    
+
+    const [toggle, setToggle] = useState(localStorage.getItem("theme") === "dark")    // theme ke liye 
+
 
     useEffect(() => {
 
@@ -66,39 +68,47 @@ export function IndexContext() {
     }, [refresh])
 
 
-   
-        const delappointment = async (id) => {
 
-            try {
-                let res = await axios.delete(`http://localhost:3000/Appointment/${id}`, { withCredentials: true })
+    const delappointment = async (id) => {
+
+        try {
+            let res = await axios.delete(`http://localhost:3000/Appointment/${id}`, { withCredentials: true })
 
 
-                alert(res.data.message)
+            alert(res.data.message)
 
-                setAppointments(prev=> prev.filter(item=>item._id !== id))
+            setAppointments(prev => prev.filter(item => item._id !== id))
 
-            } catch (error) {
+        } catch (error) {
 
-                if (error.response) {
+            if (error.response) {
 
-                    alert(error.response.data.message)
+                alert(error.response.data.message)
 
-                } else {
+            } else {
 
-                    alert("server error")
+                alert("server error")
 
-                }
             }
         }
-   
+    }
 
 
+    useEffect(() => {
+
+        document.documentElement.setAttribute("data-bs-theme", toggle ? "dark" : "light")
+
+        localStorage.setItem("theme", toggle ? "dark" : "ligth")
+
+    }, [toggle])
+    
+     console.log(toggle);
 
     return (
         <div className="container-fluid">
 
             {location.pathname.startsWith("/Dashboard") || (<header >
-                <div className="bg-light d-flex justify-content-between p-4">
+                <div className={`${toggle?"bg-body-secondary":"bg-light"} d-flex justify-content-between p-4`}>
                     <div>
                         <Link to="/"><button className="btn btn-outline-primary fs-4 bi bi-square-fill"> TaskManager</button></Link>
                     </div>
@@ -110,7 +120,7 @@ export function IndexContext() {
                 </div>
             </header>)}
 
-            <UserContext.Provider value={{ users, appointments,delappointment,setRefresh }}>
+            <UserContext.Provider value={{ users, appointments, delappointment, setRefresh,setToggle,toggle }}>
                 <Routes>
                     <Route path="/" element={<Home />} />
                     <Route path="login" element={<Login className="d-flex justify-content-end mt-4" width="w-25 ms-3 mt-4" text="Login User" icone="bi bi-person-fill" />} />
@@ -119,7 +129,7 @@ export function IndexContext() {
                         <Route index element={<Appointments />} />
                         <Route path="appointments" element={<Appointments />} />
                         <Route path="addappointments" element={<Addappointments />} />
-                        <Route path="editappointments/:id" element={<EditAppoinments/>}/>
+                        <Route path="editappointments/:id" element={<EditAppoinments />} />
                     </Route>
                 </Routes>
             </UserContext.Provider>
