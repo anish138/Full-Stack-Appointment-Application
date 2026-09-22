@@ -4,6 +4,8 @@ const resgisterroute = express.Router()
 
 import postRegister from "../controllers/registercontroller.js";
 
-resgisterroute.post("/Register",postRegister)
+import { RegisterRatLimiter } from "../middleware/ratelimitter.js";
+
+resgisterroute.post("/Register",RegisterRatLimiter,postRegister)
 
 export default resgisterroute;

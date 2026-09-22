@@ -1,0 +1,14 @@
+.sidebar-item {
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.sidebar-item:hover {
+    background-color: rgba(13, 110, 253, 0.12);
+    transform: translateX(3px);
+}
+
+.sidebar-item span:first-child {
+    width: 25px;
+    text-align: center;
+}
