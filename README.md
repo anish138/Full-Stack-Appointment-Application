@@ -6,11 +6,13 @@
 
 1. Open terminal and navigate to the backend folder:
    ```bash
-   cd localwindowdfolder/Expressjs/backend
-Run the backend server:
+cd localwindowdfolder/Expressjs/backend
 
-bash
+2. 
+  ```bash
 node app.js
+
+
 Expected output in terminal:
 
 Server running at: http://localhost:3000
@@ -19,15 +21,20 @@ Database connected successfully
 
 ✅ Backend is now running and connected to MongoDB.
 
-2. Frontend Setup
-Open a new terminal and navigate to the frontend folder:
 
-bash
-cd yourfolder/Expressjs/frontend
+
+## 2. Frontend Setup
+1. Open a new terminal and navigate to the frontend folder:
+   ```bash
+cd localwindowdfolder/Expressjs/frontend
+
 Start the frontend development server:
 
-bash
+2. 
+  ```bash
 npm run dev
+
+
 Expected output in terminal:
 
 Code
