@@ -1,46 +1,78 @@
+
 # 🚀 How to Run the Project
+
+Follow the steps below to set up and run the Express.js project locally.
 
 ---
 
 ## 1. Backend Setup
 
-1. Open terminal and navigate to the backend folder:
-   ```bash
+### Step 1: Navigate to the Backend Folder
+
+Open a terminal in VS Code and execute the following command:
+
+```bash
 cd localwindowdfolder/Expressjs/backend
+```
 
-2. 
-  ```bash
+### Step 2: Start the Backend Server
+
+Run the following command to start the Express.js application:
+
+```bash
 node app.js
+```
 
+### Expected Output
 
-Expected output in terminal:
-
+```text
 Server running at: http://localhost:3000
-
 Database connected successfully
+```
 
-✅ Backend is now running and connected to MongoDB.
+✅ The backend server is now running and connected to MongoDB.
 
-
+---
 
 ## 2. Frontend Setup
-1. Open a new terminal and navigate to the frontend folder:
-   ```bash
+
+### Step 1: Open a New Terminal
+
+Open a separate terminal in VS Code and navigate to the frontend folder:
+
+```bash
 cd localwindowdfolder/Expressjs/frontend
+```
 
-Start the frontend development server:
+### Step 2: Start the Frontend Development Server
 
-2. 
-  ```bash
+Execute the following command:
+
+```bash
 npm run dev
+```
 
+### Expected Output
 
-Expected output in terminal:
-
-Code
+```text
 ➜  Local:   http://localhost:5173/
-Open your browser and visit:
+```
 
-Code
-http://localhost:5173/
-✅ Frontend is now running successfully.
+### Step 3: Open the Application
+
+Open your browser and visit the following URL:
+
+[http://localhost:5173/](http://localhost:5173/)
+
+✅ The frontend development server is now running successfully.
+
+---
+
+## 🎉 Project Successfully Started!
+
+Make sure both the backend and frontend terminals remain open while using the application.
+
+| Component | URL |
+|---|---|
+| Backend | http://localhost:3000 |
+| Frontend | http://localhost:5173/ |
