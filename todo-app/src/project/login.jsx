@@ -1,11 +1,13 @@
 import axios from "axios"
 import { useFormik } from "formik"
-import { useEffect } from "react";
-import { useState } from "react";
+import { useEffect,useState,useContext } from "react";
 import { Link, useNavigate } from "react-router-dom"
+import UserContext from "./indexcontext";
 
 
-export function Login(props) {
+export function Login() {
+
+    const {getappointment,getusers} = useContext(UserContext)
 
     let navigate = useNavigate();
 
@@ -40,6 +42,10 @@ export function Login(props) {
 
                 resert.resetForm();
 
+                getappointment(user.username)
+
+                getusers(user.username)
+
                 navigate("/Dashboard", { replace: true })
             } catch (error) {
 
@@ -52,6 +58,7 @@ export function Login(props) {
 
                     alert(error.response.data.message)
 
+
                 } else {
                     alert("server error")
                 }
@@ -60,11 +67,11 @@ export function Login(props) {
     })
 
     return (
-        <div className={props.align}>
+        <div >
 
             <form
                 onSubmit={formik.handleSubmit}
-                className={`${props.width} mx-auto`}
+               
             >
 
                 {/* Heading */}

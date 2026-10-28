@@ -3,7 +3,7 @@ import UserContext from "./indexcontext"
 import { useFormik } from "formik"
 import axios from "axios"
 import { useNavigate } from "react-router-dom"
-import { useParams } from "react-router-dom"
+import { useParams } from "react-router-dom";
 
 export function EditAppoinments() {
 
@@ -11,7 +11,7 @@ export function EditAppoinments() {
 
     const { id } = useParams();
 
-    const { appointments, setRefresh } = useContext(UserContext);
+    const {users, appointments,getappointment } = useContext(UserContext);
 
     const appointment = appointments?.find(item => item._id === id)
 
@@ -32,13 +32,15 @@ export function EditAppoinments() {
 
                 alert(res.data.user)
 
-                setRefresh(ref => ref + 1);
+                getappointment(users.username)
 
                 navigate("/Dashboard/appointments")
 
             } catch (error) {
 
                 if (error.response) {
+
+                    console.log(error.response)
                     alert(error.response.data.message)
                 }
                 alert("server error");
@@ -159,7 +161,7 @@ export function EditAppoinments() {
                                         Save Changes
                                     </button>
 
-                                    <button
+                                    <button type="button"
                                         className="btn btn-danger px-4"
                                         onClick={() =>
                                             navigate("/Dashboard/appointments")

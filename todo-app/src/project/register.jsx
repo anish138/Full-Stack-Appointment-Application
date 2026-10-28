@@ -1,20 +1,22 @@
 import axios from "axios";
 import { useFormik } from "formik";
-import { useEffect } from "react";
+import { useContext, useEffect } from "react";
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
+import UserContext from "./indexcontext";
 
 
-
-
-export function Register(props) {
+export function Register() {
 
     let navigate = useNavigate();
 
+    const { getusers } = useContext(UserContext)
     const [show, setShow] = useState(true)
     const [error, setError] = useState("")
     const [timer, setTimer] = useState(0)
+    const [chek, setChek] = useState({})
 
+    console.log(chek)
 
     useEffect(() => {
         if (timer <= 0) return
@@ -24,6 +26,8 @@ export function Register(props) {
         }, 1000)
         return () => clearInterval(interval)
     }, [timer])
+
+
 
     const formik = useFormik({
         initialValues: {
@@ -39,18 +43,22 @@ export function Register(props) {
 
                 alert(res.data.message)
 
-                navigate("/Dashboard")
+                getusers(user.username)
 
+                navigate("/Dashboard")
 
             } catch (error) {
 
                 if (error.response.status === 429) {
 
-                    setError("Too many login attempts")
+                    setError("Too many register attempts")
                     setTimer(10)
 
+                } else if (error.response.status === 409) {
+                    setChek({ emailError: error.response.data.emailError }, { userError: error.response.data.userError })
+
                 } else if (error.response) {
-                    alert(response.data.message)
+                    alert(error.response.data.message)
 
                 } else {
                     alert("server error")
@@ -60,11 +68,66 @@ export function Register(props) {
         }
     })
 
+
+
+    const chekUser = async (field, value) => {
+        try {
+            let res = await axios.get("http://localhost:3000/Register", {
+                params: { [field]: value }
+            });
+
+            if (field === "username") {
+                setChek(prev => ({ ...prev, userError: "", userMsg: res.data.message }));
+            } else if (field === "email") {
+                setChek(prev => ({ ...prev, emailError: "", emailMsg: res.data.message }));
+            }
+        }
+        catch (error) {
+            if (error.response?.status === 409) {
+                if (field === "username") {
+                    setChek(prev => ({ ...prev, userError: error.response.data.userError, userMsg: "" }));
+                } else if (field === "email") {
+                    setChek(prev => ({ ...prev, emailError: error.response.data.emailError, emailMsg: "" }));
+                }
+            }
+        }
+    }
+
+    // Debounce for Username (500ms rukne ke baad API call hogi)
+    useEffect(() => {
+        if (!formik.values.username.trim()) {
+            setChek(prev => ({ ...prev, userError: "", userMsg: "" }));
+            return;
+        }
+
+        const timer = setTimeout(() => {
+            chekUser("username", formik.values.username);
+        }, 500);
+
+        return () => clearTimeout(timer);
+    }, [formik.values.username]);
+
+    // Debounce for Email (500ms rukne ke baad API call hogi)
+    useEffect(() => {
+        if (!formik.values.email.trim()) {
+            setChek(prev => ({ ...prev, emailError: "", emailMsg: "" }));
+            return;
+        }
+
+        const timer = setTimeout(() => {
+            chekUser("email", formik.values.email);
+        }, 500);
+
+        return () => clearTimeout(timer);
+    }, [formik.values.email]);
+
+
+
     return (
-        <div className={`${props.align} py-4`}>
+        <div className="py-4">
             <form
                 onSubmit={formik.handleSubmit}
-                className={`${props.width} mx-auto`}
+
             >
 
                 {/* Header */}
@@ -77,7 +140,7 @@ export function Register(props) {
                     </div>
 
                     <h2 className="fw-bold mb-1">
-                        {props.text || "Create Account"}
+                        Create Account
                     </h2>
 
                     <p className="text-secondary mb-0">
@@ -105,6 +168,7 @@ export function Register(props) {
                                 placeholder="Enter your name"
                                 required
                             />
+
                         </div>
 
                         {/* Username */}
@@ -123,6 +187,9 @@ export function Register(props) {
                                 placeholder="Enter username"
                                 required
                             />
+                            <span className={`${chek?.userError ? "text-danger" : "text-success"}`} id="usererror">
+                                {chek?.userError ? chek?.userError : chek?.userMsg}
+                            </span>
                         </div>
 
                         {/* Email */}
@@ -141,6 +208,9 @@ export function Register(props) {
                                 placeholder="Enter email address"
                                 required
                             />
+                            <span className={`${chek?.emailError ? "text-danger" : "text-success"}`} id="emerror">
+                                {chek?.emailError ? chek?.emailError : chek?.emailMsg}
+                            </span>
                         </div>
 
                         {/* Password */}

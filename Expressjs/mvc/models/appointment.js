@@ -1,9 +1,11 @@
 import mongoose from "mongoose";
 
-
-
 const AppointmentSchema = new mongoose.Schema({
 
+    userId: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "LoginUser"
+    },
     title: {
         type: String,
         required: true
@@ -16,17 +18,13 @@ const AppointmentSchema = new mongoose.Schema({
         type: Date,
         required: true,
         validate: {
-            validator: function (value) {
-                const today = new Date(); // today Date and time object create karega 
-                today.setHours(0, 0, 0, 0);   // time ko resert karega 
-                return value >= today;    // yaha se value chek hoga ki user ka aapointment kya hai
+            validator: (value) => {
+                const today = new Date();
+                today.setHours(0, 0, 0, 0);
+                return value >= today;
             },
-            message: 'Appointment Date Cannot be in the past'  // agar user past date enter karta hai 
+            message: 'Appointment Date Cannot be in the past'
         }
-    },
-    userId: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: "LoginUser"
     }
 });
 

@@ -1,4 +1,4 @@
-import bcrypt, { compare } from "bcrypt"
+import bcrypt from "bcrypt"
 
 const SALT_ROUND = 10;
 
@@ -14,8 +14,9 @@ export const ComparePassword = async(password,hassingPassword)=>{
     try{
          const compare = await bcrypt.compare(password,hassingPassword)
 
-         return compare
+         return compare;
     }catch(error){
+        
         throw new Error("password compair failed")
     }
 

@@ -18,24 +18,52 @@ export default UserContext;
 export function IndexContext() {
 
 
-    const [users, setUsers] = useState([{ username: null }])
+    const [users, setUsers] = useState([])
 
     const [appointments, setAppointments] = useState([{ title: null, description: null, date: null, userId: null, _id: null }])  //appointment data save
-
-    const [refresh, setRefresh] = useState(0)
 
     const location = useLocation()   // iska use location path provide karata hai 
 
     const [toggle, setToggle] = useState(localStorage.getItem("theme") === "dark")    // theme ke liye 
 
 
+
     useEffect(() => {
 
+
+
+    }, [])
+
+
+    const getappointment = async (username) => {
+        const fetchappointdata = async () => {  // appointment data fetch
+            try {
+                let res = await axios.get(`http://localhost:3000/Appointment/${username}`)
+
+                setAppointments(res.data.users)
+            } catch (error) {
+                if (error.response.status === 409) {
+                    alert("your data is updated pleass refresh page")
+                } else if (error.response?.status === 404) {
+                    alert("Now you can add appointmnets")
+                } else if (error.response) {
+                    alert(error.response.data.message)
+                } else {
+                    alert("server error");
+                }
+            }
+        }
+        fetchappointdata();
+    }
+
+    const getusers = async (username) => {
         const fetchdata = async () => {  // Login data fetch (only username )
             try {
-                let res = await axios.get("http://localhost:3000/User")
+                let res = await axios.get(`http://localhost:3000/User/${username}`)
 
                 setUsers(res.data.users)
+
+                
             } catch (error) {
                 console.log(error)
                 if (error.response) {
@@ -47,38 +75,21 @@ export function IndexContext() {
         }
 
         fetchdata();
-
-    }, [])
-
-
-    useEffect(() => {
-        const fetchappointdata = async () => {  // appointment data fetch
-            try {
-                let res = await axios.get("http://localhost:3000/Appointment")
-
-                setAppointments(res.data.users)
-            } catch (error) {
-                if (error.response) {
-                    alert(error.response.data.message)
-                } else {
-                    alert("server error");
-                }
-            }
-        }
-        fetchappointdata();
-    }, [refresh])
-
+    }
 
 
     const delappointment = async (id) => {
 
+
+
         try {
             let res = await axios.delete(`http://localhost:3000/Appointment/${id}`, { withCredentials: true })
-
 
             alert(res.data.message)
 
             setAppointments(prev => prev.filter(item => item._id !== id))
+
+            getappointment(users.username)
 
         } catch (error) {
 
@@ -99,11 +110,10 @@ export function IndexContext() {
 
         document.documentElement.setAttribute("data-bs-theme", toggle ? "dark" : "light")
 
-        localStorage.setItem("theme", toggle ? "dark" : "ligth")
+        localStorage.setItem("theme", toggle ? "dark" : "light")
 
     }, [toggle])
 
-    console.log(toggle);
 
     return (
         <div
@@ -126,42 +136,22 @@ export function IndexContext() {
                         <div className="container-fluid px-4 py-3">
 
                             <div className="d-flex justify-content-between align-items-center">
-
-
-                                {/* ================= LOGO ================= */}
-
                                 <div>
-
-                                    <Link
-                                        to="/"
-                                        className="text-decoration-none"
-                                    >
-
+                                    <Link to="/" className="text-decoration-none" >
                                         <div className="d-flex align-items-center gap-2">
-
-                                            <div
-                                                className="bg-primary rounded-3 d-flex align-items-center justify-content-center"
+                                            <div className="bg-primary rounded-3 d-flex align-items-center justify-content-center"
                                                 style={{
                                                     width: "42px",
                                                     height: "42px"
                                                 }}
                                             >
-
                                                 <span className="bi bi-check2-square text-white fs-4"></span>
-
                                             </div>
 
 
                                             <div>
-
-                                                <h4 className="mb-0 fw-bold text-primary">
-                                                    TaskManager
-                                                </h4>
-
-                                                <small className="text-secondary">
-                                                    Manage your work easily
-                                                </small>
-
+                                                <h4 className="mb-0 fw-bold text-primary"> TaskManager </h4>
+                                                <small className="text-secondary">  Manage your work easily </small>
                                             </div>
 
                                         </div>
@@ -172,14 +162,11 @@ export function IndexContext() {
 
 
 
-                                {/* ================= NAVIGATION ================= */}
+
 
                                 <div className="d-flex align-items-center gap-2">
 
-                                    <Link
-                                        to="/"
-                                        className="text-decoration-none"
-                                    >
+                                    <Link to="/" className="text-decoration-none" >
 
                                         <button className="btn btn-outline-primary px-3">
 
@@ -592,7 +579,7 @@ export function IndexContext() {
                     </div>
 
 
-                    {/* ================= FOOTER ================= */}
+
 
                     <footer
                         className={`${toggle
@@ -637,55 +624,26 @@ export function IndexContext() {
             )}
 
 
-            {/* ================= ROUTES ================= */}
 
-            <UserContext.Provider
-                value={{
-                    users,
-                    appointments,
-                    setAppointments,
-                    delappointment,
-                    setRefresh,
-                    setToggle,
-                    toggle
-                }}
-            >
+
+            <UserContext.Provider value={{ users, appointments, toggle, setAppointments, delappointment, setToggle, getappointment, getusers }} >
 
                 <Routes>
 
-                    <Route
-                        path="/"
-                        element={<Home />}
-                    />
+                    <Route path="/" element={<Home />} />
 
-                    <Route
-                        path="login"
+                    <Route path="login"
                         element={
-                            <Login
-                                className="d-flex justify-content-end mt-4"
-                                width="w-25 ms-3 mt-4"
-                                text="Login User"
-                                icone="bi bi-person-fill"
-                            />
+                            <Login className="d-flex justify-content-end mt-4" width="w-25 ms-3 mt-4" text="Login User" icone="bi bi-person-fill" />
                         }
                     />
 
-                    <Route
-                        path="register"
-                        element={
-                            <Register
-                                className="d-flex justify-content-end mt-4"
-                                width="w-25 ms-3 mt-4"
-                                text="Register User"
-                                icone="bi bi-person-fill"
-                            />
-                        }
+                    <Route path="register" element={
+                        <Register className="d-flex justify-content-end mt-4" width="w-25 ms-3 mt-4" text="Register User" icone="bi bi-person-fill" />
+                    }
                     />
 
-                    <Route
-                        path="Dashboard"
-                        element={<Dashboard />}
-                    >
+                    <Route path="Dashboard" element={<Dashboard />} >
 
                         <Route index element={<Appointments />} />
 
@@ -694,8 +652,6 @@ export function IndexContext() {
                         <Route path="addappointments" element={<Addappointments />} />
 
                         <Route path="editappointments/:id" element={<EditAppoinments />} />
-
-                        
 
                     </Route>
 

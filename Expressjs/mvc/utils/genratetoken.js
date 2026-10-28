@@ -1,15 +1,23 @@
 import jwt from "jsonwebtoken"
 
-export const genrateToken = async(userId,email)=>{
+export const genrateToken = async (userId, email) => {
 
-    const payload =({
-        userId:userId,
-        email:email
-    })
+    try {
+        const payload = ({
+            userId: userId,
+            email: email
+        })
 
-    const token = jwt.sign(payload,process.env.SECRET_KEY,{expiresIn:"1d"})
+        const token = jwt.sign(payload, process.env.SECRET_KEY, { expiresIn: "1h" })
 
-    return token;
+        return token;
+
+    } catch (error) {
+
+        throw new Error(error.message)
+
+    }
+
 }
 
 // isme ak bar token 

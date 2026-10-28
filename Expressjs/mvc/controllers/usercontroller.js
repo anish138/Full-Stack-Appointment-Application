@@ -8,54 +8,43 @@ import { cookieDelete } from "./cookiecontroller.js";
 
 const PostLoginUser = async (req, res) => {
 
-    const { username, password } = req.body
+    try {
+        const { username, password } = req.body
 
-    
+        const user = await LoginUser.findOne({ username: username })
 
-    const user = await LoginUser.findOne({ username: username })
+        if (!user)
+            return res.status(401).json({ message: "username is not exists" })
 
-    if (!user)
-        return res.status(401).json({ message: "username is not exists" })
+        const isMatch = await ComparePassword(password, user.password);
 
-
-    const isMatch = await ComparePassword(password, user.password);
-
-    if (!isMatch) {
-        return res.status(401).json({ message: "invalid password" })
-    }
-
-    const token = await genrateToken(user._id, user.email);
-    //user login karne ke bad new token create karega 
-    //ab jab bhi history chek karoge tab token verify hoga 
-
-     cookieadd(res,user.id,user.username,token)
-
-   
-    return res.status(200).json({
-        message: "logine successfully", details: {
-            id: user._id,
-            name: user.name,
-            username: user.username,
-            email: user.email,
-            token:token
+        if (!isMatch) {
+            return res.status(401).json({ message: "invalid password" })
         }
-    })
 
+        const token = await genrateToken(user._id, user.email);
+
+        cookieadd(res, user.id, user.username, token)
+
+        return res.status(200).json({ message: "logine successfully" })
+    }
+    catch (error) {
+        res.status(500).json({ message: error.message })
+    }
 
 };
 
 
-const SingOutUser = async (req,res) => {
+const SingOutUser = async (req, res) => {
     try {
 
         cookieDelete(res)
-        
-      return res.status(200).json({message:"Logout successfully"})
+
+        return res.status(200).json({ message: "Logout successfully" })
 
     } catch (error) {
-        
 
-       return res.status(500).json({ message: error.message })
+        return res.status(500).json({ message: error.message })
     }
 }
 
@@ -63,14 +52,20 @@ const SingOutUser = async (req,res) => {
 const GetUser = async (req, res) => {
     try {
 
-    
-        const data = await LoginUser.find()
+        const username = req.params.id
+
+        const data = await LoginUser.findOne({ username: username })
+
+        if (!data) {
+            return res.status(401).json({ message: "user is not found" })
+        }
 
         res.status(200).json({ users: data })
     } catch (error) {
+
         res.status(500).json({ message: error.message })
     }
-} 
+}
 
 
 

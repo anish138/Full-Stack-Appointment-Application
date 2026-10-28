@@ -3,7 +3,10 @@ import { Login } from "./login";
 import { Register } from "./register";
 import { useLocation } from "react-router-dom";
 
+
 export function Home() {
+
+
 
     const location = useLocation();
 
@@ -12,7 +15,7 @@ export function Home() {
     return (
         <div className="container-fluid">
 
-           
+
 
             <div className="row min-vh-100 align-items-center py-5">
 
@@ -135,7 +138,7 @@ export function Home() {
 
                 {/* ================= RIGHT SIDE LOGIN / REGISTER ================= */}
 
-                <div className="col-lg-6 px-4"  id="auth-container">
+                <div className="col-lg-6 px-4" id="auth-container">
 
                     <div className="mx-auto" style={{ maxWidth: "480px" }}>
 
@@ -212,7 +215,7 @@ export function Home() {
                                         className={`tab-pane ${!showRegister ? "active show" : ""}`}
                                         id="login"
                                     >
-                                        <Login />
+                                        <Login  />
                                     </div>
 
 
@@ -220,7 +223,7 @@ export function Home() {
                                         className={`tab-pane ${showRegister ? "active show" : ""}`}
                                         id="register"
                                     >
-                                        <Register />
+                                        <Register  />
                                     </div>
 
                                 </div>

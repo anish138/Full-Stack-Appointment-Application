@@ -6,10 +6,9 @@ import { useContext } from "react"
 
 export function Addappointments() {
 
-    const { users, setRefresh } = useContext(UserContext)
+    const { users, getappointment } = useContext(UserContext)
 
     const navigate = useNavigate()
-
 
     const formik = useFormik({
         initialValues: {
@@ -20,18 +19,18 @@ export function Addappointments() {
         },
         onSubmit: async (user, resert) => {
 
-            console.log(user)
-
             try {
-                let res = await axios.post("http://localhost:3000/Appointment", user, { withCredentials: true })
+
+                let res = await axios.post(`http://localhost:3000/Appointment`, user, { withCredentials: true })
 
                 alert(res.data.message)
 
+                getappointment(users.username)
+
                 resert.resetForm()
 
-                setRefresh(ref => ref + 1)  // data depan.. get method 
-
                 navigate("/Dashboard/appointments")
+
             } catch (error) {
 
                 if (error.response) {
@@ -107,16 +106,15 @@ export function Addappointments() {
                                             -- Select User --
                                         </option>
 
-                                        {
-                                            users.map(user =>
-                                                <option
-                                                    key={user._id}
-                                                    value={user._id}
-                                                >
-                                                    {user.username}
-                                                </option>
-                                            )
-                                        }
+
+
+                                        <option
+                                            key={users._id}
+                                            value={users._id}
+                                        >
+                                            {users.username}
+                                        </option>
+
 
                                     </select>
 

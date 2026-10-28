@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Outlet } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
@@ -6,7 +6,7 @@ import { useSelector } from "react-redux";
 import { Calendar } from "./calendar";
 import UserContext from "./indexcontext";
 import { useContext } from "react";
-import "./dashboard.css"
+import "./dashboard.css";
 
 export function Dashboard() {
 
@@ -28,9 +28,13 @@ export function Dashboard() {
                 { withCredentials: true }
             );
 
+            
+
             alert(res.data.message);
 
             navigate("/", { replace: true });
+
+            window.location.reload()
 
         } catch (error) {
 
@@ -72,6 +76,9 @@ export function Dashboard() {
     }
 
 
+
+
+
     return (
         <div className={`${toggle ? "bg-dark text-light" : "bg-light text-dark"} min-vh-100`}>
 
@@ -108,13 +115,9 @@ export function Dashboard() {
 
                                     <div>
 
-                                        {
-                                            users.map(app =>
-                                                <h6 className="mb-0 fw-semibold" key={app._id}>
-                                                    !Hello {app.username}
-                                                </h6>
-                                            )
-                                        }
+                                        <h6 className="mb-0 fw-semibold" key={users._id}>
+                                            !Hello {users.username}
+                                        </h6>
 
 
                                         <small className="text-secondary">
@@ -174,9 +177,9 @@ export function Dashboard() {
 
                                 <span className="bi bi-folder-fill fs-5"></span>
 
-                              
-                                    <span>Projects</span>
-                               
+
+                                <span>Projects</span>
+
 
 
 

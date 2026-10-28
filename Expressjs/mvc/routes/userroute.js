@@ -10,6 +10,6 @@ userroute.post("/User",LoginRatLimiter,PostLoginUser)
 
 userroute.delete("/User",SingOutUser)
 
-userroute.get("/User",GetUser)
+userroute.get("/User/:id",GetUser)
 
 export default userroute

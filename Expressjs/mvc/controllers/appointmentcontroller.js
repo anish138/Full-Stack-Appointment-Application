@@ -1,5 +1,5 @@
 import AppointmentUser from "../models/appointment.js"
-
+import LoginUser from "../models/user.js"
 
 //GET ALL USERS
 
@@ -31,9 +31,15 @@ const GetAllAppontments = async (req, res) => {
 const GetSingleAppointment = async (req, res) => {
     try {
 
-        const username = req.username
+        const username = req.params.id
 
-        const data = await AppointmentUser.findOne({username:username}).populate("userId")
+        const user = await LoginUser.findOne({username:username})
+
+        if(!user){
+            return res.status(404).json({message:"user is not found"})
+        }
+
+        const data = await AppointmentUser.find({userId:user._id}).populate("userId")
 
         if (!data) {
             return res.status(404).json({ messsage: "data is not found" })
@@ -65,7 +71,7 @@ const PostAppointment = async (req, res) => {
         }
         res.status(201).json({ message: "data successfully added..." })
     } catch (error) {
-        console.log(error);
+
         res.status(400).json({ message: error.message })
     }
 };
@@ -78,8 +84,8 @@ const PutAppointment = async (req, res) => {
     try {
         const { title, description, date } = req.body
         console.log(req.body)
-        const data = await AppointmentUser.findByIdAndUpdate(req.params.id, { title: title, description: description, date: date }, { new: true, runValidators: true })  // new= app ko new updated data dega                                                     
-        // runValidators = schema ke roole chek karega 
+        const data = await AppointmentUser.findByIdAndUpdate(req.params.id, { title: title, description: description, date: date }, { new: true, runValidators: true })  // new= app ko new updated data dega
+        // runValidators = schema ke roole chek karega
 
         if (!data) {
             return res.status(404).json({ message: "data is not found" })
@@ -123,7 +129,7 @@ const DeleteAppointment = async (req, res) => {
         }
         res.status(200).json({ message: "user deleted successfully" })
     } catch (error) {
-        console.log(error)
+        
         res.status(500).json({ message: error.message })
     }
 };
