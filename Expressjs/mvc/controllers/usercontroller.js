@@ -57,7 +57,11 @@ const GetUser = async (req, res) => {
         const data = await LoginUser.findOne({ username: username })
 
         if (!data) {
-            return res.status(401).json({ message: "user is not found" })
+            return res.status(404).json({ message: "user is not found" })
+        }
+
+        if (req.cookies.username !== username) {
+            return res.status(401).json({ message: "unauthorized user" })
         }
 
         res.status(200).json({ users: data })

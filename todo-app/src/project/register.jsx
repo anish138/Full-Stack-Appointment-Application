@@ -10,13 +10,11 @@ export function Register() {
 
     let navigate = useNavigate();
 
-    const { getusers } = useContext(UserContext)
+    const { getusers, getappointment, getprojects, setAppointments, setProjects, setUsers } = useContext(UserContext)
     const [show, setShow] = useState(true)
     const [error, setError] = useState("")
     const [timer, setTimer] = useState(0)
     const [chek, setChek] = useState({})
-
-    console.log(chek)
 
     useEffect(() => {
         if (timer <= 0) return
@@ -43,19 +41,31 @@ export function Register() {
 
                 alert(res.data.message)
 
-                getusers(user.username)
+                localStorage.removeItem("user");
+                localStorage.removeItem("appointments");
+                localStorage.removeItem("projects");
+                if (setAppointments) setAppointments([]);
+                if (setProjects) setProjects([]);
+                if (setUsers) setUsers(null);
+
+                await getusers(user.username);
+                await getappointment(user.username);
+                if (getprojects) await getprojects(user.username);
 
                 navigate("/Dashboard")
 
             } catch (error) {
 
-                if (error.response.status === 429) {
+                if (error.response?.status === 429) {
 
                     setError("Too many register attempts")
                     setTimer(10)
 
-                } else if (error.response.status === 409) {
-                    setChek({ emailError: error.response.data.emailError }, { userError: error.response.data.userError })
+                } else if (error.response?.status === 409) {
+                    setChek({
+                        emailError: error.response.data.emailError || "",
+                        userError: error.response.data.userError || ""
+                    })
 
                 } else if (error.response) {
                     alert(error.response.data.message)
@@ -89,6 +99,8 @@ export function Register() {
                 } else if (field === "email") {
                     setChek(prev => ({ ...prev, emailError: error.response.data.emailError, emailMsg: "" }));
                 }
+            } else if (!error.response) {
+                setError("Unable to check availability. Please try again.");
             }
         }
     }

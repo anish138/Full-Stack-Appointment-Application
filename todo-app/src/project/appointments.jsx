@@ -1,19 +1,19 @@
-import { useNavigate, useOutletContext } from "react-router-dom"
+import { useNavigate } from "react-router-dom"
 import { useContext } from "react";
 import UserContext from "./indexcontext";
 import { useDispatch } from "react-redux"
 import { addtoshare } from "./taskslice";
 
 
-export function Appointments() {
+export function Appointments({ search = "" } = {}) {
 
-    const Search = useOutletContext();
+    const Search = search;
 
     const dispatch = useDispatch()
 
     const navigate = useNavigate()
 
-    const { appointments, delappointment } = useContext(UserContext)
+    const { appointments, delappointment,toggle } = useContext(UserContext)
 
     const shareAppointment = (appointment) => {
 
@@ -22,6 +22,7 @@ export function Appointments() {
         dispatch(addtoshare(appointment));
 
     }
+
 
 
     return (
@@ -68,7 +69,7 @@ export function Appointments() {
 
                         <table className="table table-hover align-middle mb-0">
 
-                            <thead className="table-light">
+                            <thead className="table-light ">
 
                                 <tr>
                                     <th className="px-4 py-3">

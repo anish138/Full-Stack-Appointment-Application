@@ -1,68 +1,61 @@
 import ReactCalendar from "react-calendar";
+import "react-calendar/dist/Calendar.css";
+import { useState } from "react";
+import UserContext from "./indexcontext";
+import { useContext } from "react";
 
 export function Calendar() {
 
+    const [date, setDate] = useState(new Date());
+
+    const {toggle, setToggle} = useContext(UserContext);
+
     return (
-        <div className="modal fade" id="calendarmod">
-            <div className="modal-dialog modal-dialog-centered">
-                <div className="modal-content border-0 shadow-lg rounded-4 overflow-hidden">
+        <div className={`container-fluid p-4 ${toggle ? 'bg-dark bg-body-secondary' : 'bg-white'}  `}>
 
-                    {/* Header */}
-                    <div className="modal-header border-0 px-4 py-3">
-                        <div className="d-flex align-items-center gap-3">
-                            <div
-                                className="bg-primary text-white rounded-3 d-flex align-items-center justify-content-center"
-                                style={{ width: "42px", height: "42px" }}
-                            >
-                                <i className="bi bi-calendar3 fs-5"></i>
-                            </div>
+            <div className="card border-0 shadow-sm rounded-4">
 
-                            <div>
-                                <h5 className="modal-title fw-bold mb-0">
-                                    Calendar
-                                </h5>
-                                <small className="text-secondary">
-                                    Select a date
-                                </small>
-                            </div>
-                        </div>
+                <div className="card-header border-0 p-4">
 
-                        <button
-                            className="btn-close"
-                            data-bs-dismiss="modal"
-                        ></button>
+                    <h4 className="fw-bold mb-1">
+                        <i className="bi bi-calendar3 text-primary me-2"></i>
+                        Calendar
+                    </h4>
+
+                    <small className="text-secondary">
+                        Select and manage your dates
+                    </small>
+
+                </div>
+
+                <div className="card-body p-4">
+
+                    <div className="border rounded-3 p-3">
+
+                        <ReactCalendar
+                            className={`w-100 ${toggle ? 'bg-dark' : 'bg-light'} `}
+                            value={date}
+                            onChange={setDate}
+                        />
+
                     </div>
 
-                    {/* Calendar */}
-                    <div className="modal-body p-3">
-                        <div className="border rounded-4 p-2 shadow-sm">
-                            <ReactCalendar
-                                className="w-100"
-                                value={new Date()}
-                                onChange={() => {}}
-                            />
-                        </div>
-                    </div>
+                    <div className={`mt-4 p-3 ${toggle ? 'bg-dark' : 'bg-light'} rounded-3`}>
 
-                    {/* Footer */}
-                    <div className="modal-footer border-0 px-4 pb-4 pt-1">
-                        <div className="w-100 d-flex align-items-center justify-content-between">
-                            <small className="text-secondary">
-                                <i className="bi bi-info-circle me-1"></i>
-                                Choose a date from the calendar
-                            </small>
+                        <span className="text-secondary">
+                            Selected Date:
+                        </span>
 
-                            <button
-                                className="btn btn-outline-secondary btn-sm px-3"
-                                data-bs-dismiss="modal"
-                            >
-                                Close
-                            </button>
-                        </div>
+                        <h5 className="mt-1 mb-0 fw-semibold">
+                            {date.toDateString()}
+                        </h5>
+
                     </div>
 
                 </div>
+
             </div>
+
         </div>
-    )
+    );
 }

@@ -41,12 +41,6 @@ const GetSingleAppointment = async (req, res) => {
 
         const data = await AppointmentUser.find({userId:user._id}).populate("userId")
 
-        if (!data) {
-            return res.status(404).json({ messsage: "data is not found" })
-        }
-        if (data.length === 0) {
-            return res.status(404).json({ messsage: "data is empty" })
-        }
         res.status(200).json({ users: data })
     } catch (error) {
         res.status(500).json({ message: error.message })

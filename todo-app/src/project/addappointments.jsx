@@ -108,12 +108,11 @@ export function Addappointments() {
 
 
 
-                                        <option
-                                            key={users._id}
-                                            value={users._id}
-                                        >
-                                            {users.username}
-                                        </option>
+                                        {users && (
+                                            <option key={users._id} value={users._id}>
+                                                {users.username}
+                                            </option>
+                                        )}
 
 
                                     </select>
@@ -152,10 +151,10 @@ export function Addappointments() {
                                         Description
                                     </label>
 
-                                    <input
+                                    <textarea
                                         type="text"
                                         name="description"
-                                        className="form-control form-control-lg"
+                                        className="form-control form-control-lg "
                                         value={formik.values.description}
                                         onChange={formik.handleChange}
                                         placeholder="Enter appointment description"
@@ -194,7 +193,7 @@ export function Addappointments() {
                                         className="btn btn-outline-secondary px-4"
                                         type="button"
                                         onClick={() =>
-                                            navigate("/Dashboard/appointments")
+                                            navigate("/Dashboard")
                                         }
                                     >
                                         <i className="bi bi-x-lg me-2"></i>

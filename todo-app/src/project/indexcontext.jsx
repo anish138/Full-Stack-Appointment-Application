@@ -1,14 +1,22 @@
-import { Link, Route, Routes } from "react-router-dom";
+import { Link, Route, Routes, useLocation } from "react-router-dom";
+import { createContext, useState, useEffect, useRef } from "react";
 import axios from "axios";
 import { Home } from "./home";
 import { Login } from "./login";
 import { Register } from "./register";
 import { Dashboard } from "./dashboard";
-import { useLocation } from "react-router-dom";
-import { createContext, useState, useEffect } from "react";
 import { Appointments } from "./appointments";
 import { Addappointments } from "./addappointments";
 import { EditAppoinments } from "./editappointments";
+import { DashboardHome } from "./dashboardhome";
+import { Project, initialProjects } from "./projects";
+import { ProjectsAdd } from "./projectsadd";
+import { ProjectsEdit } from "./projectsedit";
+import { Task } from "./task";
+import { Notification } from "./notification";
+import { Report } from "./report";
+import { Help } from "./help";
+import { Calendar } from "./calendar";
 
 
 
@@ -18,64 +26,163 @@ export default UserContext;
 export function IndexContext() {
 
 
-    const [users, setUsers] = useState([])
+    const [users, setUsers] = useState(() => {
+        try {
+            return JSON.parse(localStorage.getItem("user"))
+        } catch {
+            return null
+        }
+    })
 
-    const [appointments, setAppointments] = useState([{ title: null, description: null, date: null, userId: null, _id: null }])  //appointment data save
+    const [appointments, setAppointments] = useState(() => {
+        try {
+            return JSON.parse(localStorage.getItem("appointments")) || []
+        } catch {
+            return []
+        }
+    })
 
-    const location = useLocation()   // iska use location path provide karata hai 
+    const [projects, setProjects] = useState(() => {
+        try {
+            const saved = localStorage.getItem("projects");
+            return saved ? JSON.parse(saved) : initialProjects;
+        } catch {
+            return initialProjects;
+        }
+    })
+
+    const [tasks, setTasks] = useState([])
+
+    const location = useLocation()   // iska use location path provide karata hai  
 
     const [toggle, setToggle] = useState(localStorage.getItem("theme") === "dark")    // theme ke liye 
+    const [activePreview, setActivePreview] = useState("");
+
+    const previewContent = {
+        Home: {
+            icon: "bi-house",
+            description: "Welcome to TaskManager, a simple place to organize your work and keep your day on track.",
+            items: ["Your workspace overview", "Quick access to projects", "Tasks and appointments"]
+        },
+        Features: {
+            icon: "bi-stars",
+            description: "Plan projects, manage daily tasks, and keep appointments organized in one workspace.",
+            items: ["Project tracking", "Task progress", "Appointment calendar"]
+        },
+        Pricing: {
+            icon: "bi-tag",
+            description: "TaskManager is currently free to use. Manage your work without a paid plan.",
+            items: ["Free workspace", "Projects and tasks", "No billing required"]
+        },
+        About: {
+            icon: "bi-info-circle",
+            description: "A simple workspace to help you organize projects, tasks, and appointments.",
+            items: ["Stay organized", "Track progress", "Manage your schedule"]
+        }
+    }; 
 
 
 
-    useEffect(() => {
+    const clearSession = () => {
+        localStorage.removeItem("user");
+        localStorage.removeItem("appointments");
+        localStorage.removeItem("projects");
+        setUsers(null);
+        setAppointments([]);
+        setProjects(initialProjects);
+    };
 
-
-
-    }, [])
-
+    const clearSessionRef = useRef(clearSession);
+    clearSessionRef.current = clearSession;
 
     const getappointment = async (username) => {
-        const fetchappointdata = async () => {  // appointment data fetch
-            try {
-                let res = await axios.get(`http://localhost:3000/Appointment/${username}`)
-
-                setAppointments(res.data.users)
-            } catch (error) {
-                if (error.response.status === 409) {
-                    alert("your data is updated pleass refresh page")
-                } else if (error.response?.status === 404) {
-                    alert("Now you can add appointmnets")
-                } else if (error.response) {
-                    alert(error.response.data.message)
-                } else {
-                    alert("server error");
-                }
-            }
+        if (!username) {
+            setAppointments([])
+            localStorage.setItem("appointments", JSON.stringify([]))
+            return []
         }
-        fetchappointdata();
+        try {
+            let res = await axios.get(`http://localhost:3000/Appointment/${username}`, { withCredentials: true })
+            const data = res.data.users || []
+            setAppointments(data)
+            localStorage.setItem("appointments", JSON.stringify(data))
+            return data
+        } catch (error) {
+            if (error.response?.status === 404) {
+                setAppointments([])
+                localStorage.setItem("appointments", JSON.stringify([]))
+                return []
+            }
+            if (error.response?.status === 401 || error.response?.status === 409) {
+                clearSessionRef.current()
+            } else if (error.response) {
+                alert(error.response.data.message)
+            } else {
+                alert("server error");
+            }
+            return []
+        }
     }
+
+    const getprojects = async (username) => {
+        try {
+            const url = username
+                ? `http://localhost:3000/Project/${username}`
+                : `http://localhost:3000/Project`;
+            let res = await axios.get(url, { withCredentials: true });
+            const data = res.data.projects || [];
+            setProjects(data);
+            localStorage.setItem("projects", JSON.stringify(data));
+            return data;
+        } catch (error) {
+            if (error.response?.status === 404) {
+                setProjects([]);
+                localStorage.setItem("projects", JSON.stringify([]));
+                return [];
+            }
+            if (error.response?.status === 401 || error.response?.status === 409) {
+                clearSessionRef.current();
+            } else if (!error.response) {
+                console.error("Unable to load projects:", error);
+            }
+            return [];
+        }
+    };
 
     const getusers = async (username) => {
-        const fetchdata = async () => {  // Login data fetch (only username )
+        if (!username) return null
+        try {
+            let res = await axios.get(`http://localhost:3000/User/${username}`, { withCredentials: true })
+            setUsers(res.data.users)
+            localStorage.setItem("user", JSON.stringify(res.data.users))
+            return res.data.users
+        } catch (error) {
+            if (error.response?.status === 401 || error.response?.status === 409) {
+                clearSessionRef.current();
+            } else if (error.response) {
+                alert(error.response.data.message)
+            } else {
+                alert("server error indexCount");
+            }
+            return null
+        }
+    }
+
+    useEffect(() => {
+        const storedUser = localStorage.getItem("user");
+        if (storedUser) {
             try {
-                let res = await axios.get(`http://localhost:3000/User/${username}`)
-
-                setUsers(res.data.users)
-
-                
-            } catch (error) {
-                console.log(error)
-                if (error.response) {
-                    alert(error.response.data.message)
-                } else {
-                    alert("server error indexCount");
+                const parsedUser = JSON.parse(storedUser);
+                if (parsedUser?.username) {
+                    getusers(parsedUser.username);
+                    getappointment(parsedUser.username);
+                    getprojects(parsedUser.username);
                 }
+            } catch {
+                clearSessionRef.current();
             }
         }
-
-        fetchdata();
-    }
+    }, [])
 
 
     const delappointment = async (id) => {
@@ -87,9 +194,13 @@ export function IndexContext() {
 
             alert(res.data.message)
 
-            setAppointments(prev => prev.filter(item => item._id !== id))
+            setAppointments(prev => {
+                const updatedAppointments = prev.filter(item => item._id !== id)
+                localStorage.setItem("appointments", JSON.stringify(updatedAppointments))
+                return updatedAppointments
+            })
 
-            getappointment(users.username)
+            getappointment(users?.username)
 
         } catch (error) {
 
@@ -164,11 +275,14 @@ export function IndexContext() {
 
 
 
-                                <div className="d-flex align-items-center gap-2">
+                                <div
+                                    className="d-flex align-items-center gap-2 position-relative"
+                                    onMouseLeave={() => setActivePreview("")}
+                                >
 
-                                    <Link to="/" className="text-decoration-none" >
+                                    <Link to="/" className="text-decoration-none" onMouseEnter={() => setActivePreview("Home")}>
 
-                                        <button className="btn btn-outline-primary px-3">
+                                        <button className="btn btn-outline-primary px-3" onFocus={() => setActivePreview("Home")}>
 
                                             <span className="bi bi-house me-1"></span>
 
@@ -179,7 +293,7 @@ export function IndexContext() {
                                     </Link>
 
 
-                                    <button className="btn btn-outline-primary px-3">
+                                    <button className="btn btn-outline-primary px-3" onMouseEnter={() => setActivePreview("Features")} onFocus={() => setActivePreview("Features")}>
 
                                         <span className="bi bi-stars me-1"></span>
 
@@ -188,7 +302,7 @@ export function IndexContext() {
                                     </button>
 
 
-                                    <button className="btn btn-outline-primary px-3">
+                                    <button className="btn btn-outline-primary px-3" onMouseEnter={() => setActivePreview("Pricing")} onFocus={() => setActivePreview("Pricing")}>
 
                                         <span className="bi bi-tag me-1"></span>
 
@@ -197,7 +311,7 @@ export function IndexContext() {
                                     </button>
 
 
-                                    <button className="btn btn-outline-primary px-3">
+                                    <button className="btn btn-outline-primary px-3" onMouseEnter={() => setActivePreview("About")} onFocus={() => setActivePreview("About")}>
 
                                         <span className="bi bi-info-circle me-1"></span>
 
@@ -223,6 +337,27 @@ export function IndexContext() {
 
                                     </button>
 
+                                    {activePreview && previewContent[activePreview] && (
+                                        <div
+                                            className={`position-absolute top-100 end-0 p-3 rounded-4 shadow ${toggle ? "bg-dark text-light border-secondary" : "bg-white text-dark border"}`}
+                                            style={{ width: "min(340px, calc(100vw - 32px))", zIndex: 1050 }}
+                                            role="status"
+                                        >
+                                            <div className="d-flex align-items-center gap-2 mb-2">
+                                                <span className={`bi ${previewContent[activePreview].icon} text-primary fs-5`}></span>
+                                                <strong>{activePreview}</strong>
+                                            </div>
+                                            <p className="small text-secondary mb-2">{previewContent[activePreview].description}</p>
+                                            <ul className="list-unstyled small mb-0">
+                                                {previewContent[activePreview].items.map((item) => (
+                                                    <li className="mb-1" key={item}>
+                                                        <span className="bi bi-check2 text-success me-2"></span>{item}
+                                                    </li>
+                                                ))}
+                                            </ul>
+                                        </div>
+                                    )}
+
                                 </div>
 
                             </div>
@@ -232,7 +367,7 @@ export function IndexContext() {
                     </nav>
 
 
-                    {/* ================= HERO / INTRO ================= */}
+                   
 
                     <div
                         className={`${toggle
@@ -626,7 +761,7 @@ export function IndexContext() {
 
 
 
-            <UserContext.Provider value={{ users, appointments, toggle, setAppointments, delappointment, setToggle, getappointment, getusers }} >
+            <UserContext.Provider value={{ users, setUsers, appointments, setAppointments, projects, setProjects, getprojects, tasks, setTasks, toggle, setToggle, delappointment, getappointment, getusers }} >
 
                 <Routes>
 
@@ -645,13 +780,31 @@ export function IndexContext() {
 
                     <Route path="Dashboard" element={<Dashboard />} >
 
-                        <Route index element={<Appointments />} />
+                        <Route index element={<DashboardHome />} />
+
+                        <Route path="Dashhome" element={<DashboardHome />} />
+
+                        <Route path="project" element={<Project />} />
+
+                        <Route path="addproject" element={<ProjectsAdd />} />
+
+                        <Route path="editproject/:id" element={<ProjectsEdit />} />
+
+                        <Route path="task" element={<Task />} />
+
+                        <Route path="notification" element={<Notification />} />
+
+                        <Route path="report" element={<Report />} />
+
+                        <Route path="help" element={<Help />} />
 
                         <Route path="appointments" element={<Appointments />} />
 
                         <Route path="addappointments" element={<Addappointments />} />
 
                         <Route path="editappointments/:id" element={<EditAppoinments />} />
+
+                        <Route path="calendar" element={<Calendar />} />
 
                     </Route>
 

@@ -7,7 +7,7 @@ import UserContext from "./indexcontext";
 
 export function Login() {
 
-    const {getappointment,getusers} = useContext(UserContext)
+    const { getappointment, getusers, getprojects, setAppointments, setProjects, setUsers } = useContext(UserContext)
 
     let navigate = useNavigate();
 
@@ -42,9 +42,16 @@ export function Login() {
 
                 resert.resetForm();
 
-                getappointment(user.username)
+                localStorage.removeItem("user");
+                localStorage.removeItem("appointments");
+                localStorage.removeItem("projects");
+                if (setAppointments) setAppointments([]);
+                if (setProjects) setProjects([]);
+                if (setUsers) setUsers(null);
 
-                getusers(user.username)
+                await getusers(user.username);
+                await getappointment(user.username);
+                if (getprojects) await getprojects(user.username);
 
                 navigate("/Dashboard", { replace: true })
             } catch (error) {

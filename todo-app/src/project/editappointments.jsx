@@ -164,7 +164,7 @@ export function EditAppoinments() {
                                     <button type="button"
                                         className="btn btn-danger px-4"
                                         onClick={() =>
-                                            navigate("/Dashboard/appointments")
+                                            navigate("/Dashboard")
                                         }
                                     >
                                         <i className="bi bi-x-lg me-2"></i>
