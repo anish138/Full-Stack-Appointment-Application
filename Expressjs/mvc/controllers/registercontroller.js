@@ -61,7 +61,7 @@ const postRegister = async (req, res) => {
 
         cookieadd(res, user.id, user.username, token)
 
-        return res.status(201).json({ message: "user created successfully", details: { _id: user._id, name, email, hasspassword } })
+        return res.status(201).json({ message: "user created successfully", details: { _id: user._id, name } })
 
     }
     catch (error) {

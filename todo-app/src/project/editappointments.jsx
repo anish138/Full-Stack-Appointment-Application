@@ -38,12 +38,19 @@ export function EditAppoinments() {
 
             } catch (error) {
 
-                if (error.response) {
+                if(error.response.state === 400){
 
-                    console.log(error.response)
                     alert(error.response.data.message)
+
+                }else if (error.response) {
+
+                    alert(error.response.data.message)
+
+                }else{
+                    
+                    alert("server error");
                 }
-                alert("server error");
+                
             }
         }
     })

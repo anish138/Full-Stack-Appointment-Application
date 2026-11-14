@@ -77,7 +77,7 @@ const PutAppointment = async (req, res) => {
 
     try {
         const { title, description, date } = req.body
-        console.log(req.body)
+       
         const data = await AppointmentUser.findByIdAndUpdate(req.params.id, { title: title, description: description, date: date }, { new: true, runValidators: true })  // new= app ko new updated data dega
         // runValidators = schema ke roole chek karega
 

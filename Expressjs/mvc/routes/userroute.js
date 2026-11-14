@@ -2,13 +2,15 @@
 import express from "express";
 const userroute = express.Router();
 
+import { verifytoken } from "../middleware/middleware.js";
+
 import { LoginRatLimiter  } from "../middleware/ratelimitter.js";
 
 import {PostLoginUser,SingOutUser,GetUser} from "../controllers/usercontroller.js";
 
 userroute.post("/User",LoginRatLimiter,PostLoginUser)
 
-userroute.delete("/User",SingOutUser)
+userroute.delete("/User",verifytoken,SingOutUser)
 
 userroute.get("/User/:id",GetUser)
 
