@@ -33,6 +33,10 @@ app.use("/",projectroute);
 app.use("/",taskroute);
 app.use("/",notificationroute);
 
+app.get("/",(req,res)=>{
+    res.send("server is running");
+})
+
 
 app.listen(process.env.PORT,()=>{
     console.log(`http://localhost:${process.env.PORT}`)
