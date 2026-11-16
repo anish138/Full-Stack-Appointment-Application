@@ -41,6 +41,9 @@ src/components/
 src/practice/
 src/videos/
 src/assets/
+src/App.css
+src/App.jsx
+src/index.css
 src/videos
 
 
