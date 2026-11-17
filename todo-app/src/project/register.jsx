@@ -37,7 +37,7 @@ export function Register() {
         onSubmit: async (user) => {
 
             try {
-                let res = await axios.post("http://localhost:3000/Register", user, { withCredentials: true })
+                let res = await axios.post("https://full-stack-appointment-application.onrender.com/Register", user, { withCredentials: true })
 
                 alert(res.data.message)
 
@@ -82,7 +82,7 @@ export function Register() {
 
     const chekUser = async (field, value) => {
         try {
-            let res = await axios.get("http://localhost:3000/Register", {
+            let res = await axios.get("https://full-stack-appointment-application.onrender.com/Register", {
                 params: { [field]: value }
             });
 

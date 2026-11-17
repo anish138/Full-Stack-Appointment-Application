@@ -3,7 +3,7 @@ import { useEffect, useState, useContext } from "react";
 import axios from "axios";
 import UserContext from "./indexcontext";
 
-const REPORT_API = "http://localhost:3000/Report";
+const REPORT_API = "https://full-stack-appointment-application.onrender.com/Report";
 
 export function Report() {
     const { users,toggle } = useContext(UserContext);

@@ -17,7 +17,7 @@ export function ProjectsEdit() {
         // Fetch fresh project details from backend if not already available
         const fetchProject = async () => {
             try {
-                let res = await axios.get(`http://localhost:3000/Project/${id}`, { withCredentials: true });
+                let res = await axios.get(`https://full-stack-appointment-application.onrender.com/Project/${id}`, { withCredentials: true });
                 if (res.data.project) {
                     setCurrentProject(res.data.project);
                 }
@@ -48,7 +48,7 @@ export function ProjectsEdit() {
         },
         onSubmit: async (values) => {
             try {
-                let res = await axios.put(`http://localhost:3000/Project/${id}`, values, { withCredentials: true });
+                let res = await axios.put(`https://full-stack-appointment-application.onrender.com/Project/${id}`, values, { withCredentials: true });
                 alert(res.data.message || "Project updated successfully");
 
                 if (getprojects && users?.username) {

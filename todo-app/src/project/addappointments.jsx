@@ -21,7 +21,7 @@ export function Addappointments() {
 
             try {
 
-                let res = await axios.post(`http://localhost:3000/Appointment`, user, { withCredentials: true })
+                let res = await axios.post(`https://full-stack-appointment-application.onrender.com/Appointment`, user, { withCredentials: true })
 
                 alert(res.data.message)
 

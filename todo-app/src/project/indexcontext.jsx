@@ -102,7 +102,7 @@ export function IndexContext() {
             return []
         }
         try {
-            let res = await axios.get(`http://localhost:3000/Appointment/${username}`, { withCredentials: true })
+            let res = await axios.get(`https://full-stack-appointment-application.onrender.com/Appointment/${username}`, { withCredentials: true })
             const data = res.data.users || []
             setAppointments(data)
             localStorage.setItem("appointments", JSON.stringify(data))
@@ -127,8 +127,8 @@ export function IndexContext() {
     const getprojects = async (username) => {
         try {
             const url = username
-                ? `http://localhost:3000/Project/${username}`
-                : `http://localhost:3000/Project`;
+                ? `https://full-stack-appointment-application.onrender.com/Project/${username}`
+                : `https://full-stack-appointment-application.onrender.com/Project`;
             let res = await axios.get(url, { withCredentials: true });
             const data = res.data.projects || [];
             setProjects(data);
@@ -152,7 +152,7 @@ export function IndexContext() {
     const getusers = async (username) => {
         if (!username) return null
         try {
-            let res = await axios.get(`http://localhost:3000/User/${username}`, { withCredentials: true })
+            let res = await axios.get(`https://full-stack-appointment-application.onrender.com/User/${username}`, { withCredentials: true })
             setUsers(res.data.users)
             localStorage.setItem("user", JSON.stringify(res.data.users))
             return res.data.users
@@ -190,7 +190,7 @@ export function IndexContext() {
 
 
         try {
-            let res = await axios.delete(`http://localhost:3000/Appointment/${id}`, { withCredentials: true })
+            let res = await axios.delete(`https://full-stack-appointment-application.onrender.com/Appointment/${id}`, { withCredentials: true })
 
             alert(res.data.message)
 

@@ -22,7 +22,7 @@ export function DashboardHome() {
 
         try {
             let res = await axios.delete(
-                `http://localhost:3000/User`,
+                `https://full-stack-appointment-application.onrender.com/User`,
                 { withCredentials: true }
             );
 

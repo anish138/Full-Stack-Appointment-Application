@@ -3,7 +3,7 @@ import { useEffect, useState, useContext } from "react";
 import axios from "axios";
 import UserContext from "./indexcontext";
 
-const NOTIFICATION_API = "http://localhost:3000/Notification";
+const NOTIFICATION_API = "https://full-stack-appointment-application.onrender.com/Notification";
 
 export function Notification() {
     const { users,toggle } = useContext(UserContext);

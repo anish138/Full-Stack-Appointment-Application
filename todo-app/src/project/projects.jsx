@@ -37,7 +37,7 @@ export function Project() {
         if (!isConfirmed) return;
 
         try {
-            let res = await axios.delete(`http://localhost:3000/Project/${id}`, { withCredentials: true });
+            let res = await axios.delete(`https://full-stack-appointment-application.onrender.com/Project/${id}`, { withCredentials: true });
             alert(res.data.message || "Project deleted successfully");
 
             if (getprojects && users?.username) {

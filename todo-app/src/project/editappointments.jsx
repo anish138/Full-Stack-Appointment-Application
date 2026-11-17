@@ -28,7 +28,7 @@ export function EditAppoinments() {
         },
         onSubmit: async (user) => {
             try {
-                let res = await axios.put(`http://localhost:3000/Appointment/${id}`, user, { withCredentials: true })
+                let res = await axios.put(`https://full-stack-appointment-application.onrender.com/Appointment/${id}`, user, { withCredentials: true })
 
                 alert(res.data.user)
 
