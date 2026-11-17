@@ -9,7 +9,7 @@ import { Appointments } from "./appointments";
 import { Addappointments } from "./addappointments";
 import { EditAppoinments } from "./editappointments";
 import { DashboardHome } from "./dashboardhome";
-import { Project, initialProjects } from "./projects";
+import { Project } from "./projects";
 import { ProjectsAdd } from "./projectsadd";
 import { ProjectsEdit } from "./projectsedit";
 import { Task } from "./task";
@@ -42,14 +42,7 @@ export function IndexContext() {
         }
     })
 
-    const [projects, setProjects] = useState(() => {
-        try {
-            const saved = localStorage.getItem("projects");
-            return saved ? JSON.parse(saved) : initialProjects;
-        } catch {
-            return initialProjects;
-        }
-    })
+    const [projects, setProjects] = useState([]);
 
     const [tasks, setTasks] = useState([])
 
@@ -89,7 +82,7 @@ export function IndexContext() {
         localStorage.removeItem("projects");
         setUsers(null);
         setAppointments([]);
-        setProjects(initialProjects);
+        setProjects([]);
     };
 
     const clearSessionRef = useRef(clearSession);
@@ -132,12 +125,10 @@ export function IndexContext() {
             let res = await axios.get(url, { withCredentials: true });
             const data = res.data.projects || [];
             setProjects(data);
-            localStorage.setItem("projects", JSON.stringify(data));
             return data;
         } catch (error) {
             if (error.response?.status === 404) {
                 setProjects([]);
-                localStorage.setItem("projects", JSON.stringify([]));
                 return [];
             }
             if (error.response?.status === 401 || error.response?.status === 409) {

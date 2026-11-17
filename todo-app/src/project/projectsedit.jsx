@@ -10,7 +10,7 @@ export function ProjectsEdit() {
     const { users, projects, getprojects } = useContext(UserContext);
 
     const [currentProject, setCurrentProject] = useState(() => {
-        return projects?.find((item) => (item._id || item.id) === id) || null;
+        return projects?.find((item) => item._id === id) || null;
     });
 
     useEffect(() => {

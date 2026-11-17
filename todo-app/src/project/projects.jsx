@@ -3,24 +3,10 @@ import { useNavigate } from "react-router-dom";
 import UserContext from "./indexcontext";
 import axios from "axios";
 
-export const initialProjects = [
-    {
-        id: 1,
-        name: "Website Redesign",
-        description: "Refresh the product experience with a cleaner interface.",
-        status: "In progress",
-        progress: 68,
-        dueDate: "2026-11-18",
-        tasks: 17,
-        completedTasks: 12,
-    }
-   
-];
-
 export function Project() {
 
     const navigate = useNavigate();
-    const { users, projects = [], setProjects, getprojects,toggle } = useContext(UserContext);
+    const { users, projects = [], setProjects, getprojects, toggle } = useContext(UserContext);
 
     const [search, setSearch] = useState("");
     const [status, setStatus] = useState("All projects");
@@ -31,7 +17,7 @@ export function Project() {
         }
     }, [users?.username]);
 
-    // Delete project inside projects.jsx component
+    // Delete project
     const deleteProject = async (id) => {
         const isConfirmed = window.confirm("Are you sure you want to delete this project?");
         if (!isConfirmed) return;
@@ -43,19 +29,13 @@ export function Project() {
             if (getprojects && users?.username) {
                 await getprojects(users.username);
             } else if (setProjects) {
-                const updated = projects.filter((p) => (p._id || p.id) !== id);
-                setProjects(updated);
-                localStorage.setItem("projects", JSON.stringify(updated));
+                setProjects(prev => prev.filter((p) => p._id !== id));
             }
         } catch (error) {
             if (error.response) {
                 alert(error.response.data.message);
             } else {
-                // If backend route is offline or local fallback
-                const updated = projects.filter((p) => (p._id || p.id) !== id);
-                if (setProjects) setProjects(updated);
-                localStorage.setItem("projects", JSON.stringify(updated));
-                alert("Project deleted locally");
+                alert("server error");
             }
         }
     };
@@ -91,10 +71,7 @@ export function Project() {
     };
 
     return (
-        <main className={`container-fluid py-4 px-3 ${toggle ? 'bg-dark' : 'bg-light'} min-vh-100  ${toggle
-                    ? "bg-body-secondary"
-                    : "bg-white"
-                    }`}>
+        <main className={`container-fluid py-4 px-3 min-vh-100 ${toggle ? "bg-dark bg-body-secondary text-light" : "bg-white text-dark"}`}>
             {/* Header */}
             <div className="d-flex justify-content-between align-items-center mb-4">
                 <div>
@@ -174,83 +151,80 @@ export function Project() {
 
                     <div className="row g-3">
                         {filteredProjects.length > 0 ? (
-                            filteredProjects.map((project) => {
-                                const projectId = project._id || project.id;
-                                return (
-                                    <div className="col-md-6 col-xl-4" key={projectId}>
-                                        <div className="card h-100 shadow-sm">
-                                            <div className="card-body p-4 d-flex flex-column justify-content-between">
-                                                <div>
-                                                    <div className="d-flex justify-content-between align-items-start mb-3">
-                                                        <h5 className="fw-bold mb-0 text-truncate" style={{ maxWidth: "70%" }}>
-                                                            {project.name}
-                                                        </h5>
+                            filteredProjects.map((project) => (
+                                <div className="col-md-6 col-xl-4" key={project._id}>
+                                    <div className="card h-100 shadow-sm">
+                                        <div className="card-body p-4 d-flex flex-column justify-content-between">
+                                            <div>
+                                                <div className="d-flex justify-content-between align-items-start mb-3">
+                                                    <h5 className="fw-bold mb-0 text-truncate" style={{ maxWidth: "70%" }}>
+                                                        {project.name}
+                                                    </h5>
 
-                                                        <span className={`badge ${
-                                                            project.status === "In progress"
-                                                                ? "text-bg-success"
-                                                                : project.status === "Completed"
-                                                                ? "text-bg-primary"
-                                                                : "text-bg-warning"
-                                                        }`}>
-                                                            {project.status || "Planning"}
-                                                        </span>
-                                                    </div>
-
-                                                    <p className="text-secondary small mb-3">
-                                                        {project.description || "No description provided."}
-                                                    </p>
-
-                                                    <div className="d-flex justify-content-between mb-2">
-                                                        <span className="small text-secondary">Progress</span>
-                                                        <span className="small fw-semibold">{project.progress || 0}%</span>
-                                                    </div>
-
-                                                    <div className="progress mb-3" style={{ height: "7px" }}>
-                                                        <div
-                                                            className={`progress-bar ${
-                                                                (project.progress || 0) >= 100 ? "bg-success" : "bg-primary"
-                                                            }`}
-                                                            style={{ width: `${project.progress || 0}%` }}
-                                                        ></div>
-                                                    </div>
-
-                                                    <div className="d-flex justify-content-between text-secondary small">
-                                                        <span>
-                                                            <i className="bi bi-list-check me-1"></i>
-                                                            {project.completedTasks || 0}/{project.tasks || 0} Tasks
-                                                        </span>
-
-                                                        <span>
-                                                            <i className="bi bi-calendar3 me-1"></i>
-                                                            {formatDate(project.dueDate)}
-                                                        </span>
-                                                    </div>
+                                                    <span className={`badge ${
+                                                        project.status === "In progress"
+                                                            ? "text-bg-success"
+                                                            : project.status === "Completed"
+                                                            ? "text-bg-primary"
+                                                            : "text-bg-warning"
+                                                    }`}>
+                                                        {project.status || "Planning"}
+                                                    </span>
                                                 </div>
 
-                                                {/* Action Buttons: Edit and Delete */}
-                                                <div className="pt-3 mt-3 border-top d-flex justify-content-end gap-2">
-                                                    <button
-                                                        className="btn btn-outline-warning btn-sm"
-                                                        onClick={() => navigate(`/Dashboard/editproject/${projectId}`)}
-                                                        title="Edit Project"
-                                                    >
-                                                        <i className="bi bi-pencil-square me-1"></i> Edit
-                                                    </button>
+                                                <p className="text-secondary small mb-3">
+                                                    {project.description || "No description provided."}
+                                                </p>
 
-                                                    <button
-                                                        className="btn btn-outline-danger btn-sm"
-                                                        onClick={() => deleteProject(projectId)}
-                                                        title="Delete Project"
-                                                    >
-                                                        <i className="bi bi-trash me-1"></i> Delete
-                                                    </button>
+                                                <div className="d-flex justify-content-between mb-2">
+                                                    <span className="small text-secondary">Progress</span>
+                                                    <span className="small fw-semibold">{project.progress || 0}%</span>
                                                 </div>
+
+                                                <div className="progress mb-3" style={{ height: "7px" }}>
+                                                    <div
+                                                        className={`progress-bar ${
+                                                            (project.progress || 0) >= 100 ? "bg-success" : "bg-primary"
+                                                        }`}
+                                                        style={{ width: `${project.progress || 0}%` }}
+                                                    ></div>
+                                                </div>
+
+                                                <div className="d-flex justify-content-between text-secondary small">
+                                                    <span>
+                                                        <i className="bi bi-list-check me-1"></i>
+                                                        {project.completedTasks || 0}/{project.tasks || 0} Tasks
+                                                    </span>
+
+                                                    <span>
+                                                        <i className="bi bi-calendar3 me-1"></i>
+                                                        {formatDate(project.dueDate)}
+                                                    </span>
+                                                </div>
+                                            </div>
+
+                                            {/* Action Buttons: Edit and Delete */}
+                                            <div className="pt-3 mt-3 border-top d-flex justify-content-end gap-2">
+                                                <button
+                                                    className="btn btn-outline-warning btn-sm"
+                                                    onClick={() => navigate(`/Dashboard/editproject/${project._id}`)}
+                                                    title="Edit Project"
+                                                >
+                                                    <i className="bi bi-pencil-square me-1"></i> Edit
+                                                </button>
+
+                                                <button
+                                                    className="btn btn-outline-danger btn-sm"
+                                                    onClick={() => deleteProject(project._id)}
+                                                    title="Delete Project"
+                                                >
+                                                    <i className="bi bi-trash me-1"></i> Delete
+                                                </button>
                                             </div>
                                         </div>
                                     </div>
-                                );
-                            })
+                                </div>
+                            ))
                         ) : (
                             <div className="text-center py-5">
                                 <div
