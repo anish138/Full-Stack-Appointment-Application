@@ -22,7 +22,11 @@ export function ProjectsEdit() {
                     setCurrentProject(res.data.project);
                 }
             } catch (err) {
-                console.log("Error loading project:", err);
+                if (!err.response) {
+                    alert("Network Error Pleass Try Again")
+                } else {
+                    console.log("Error loading project:", err);
+                }
             }
         };
 

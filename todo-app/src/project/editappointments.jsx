@@ -11,7 +11,7 @@ export function EditAppoinments() {
 
     const { id } = useParams();
 
-    const {users, appointments,getappointment } = useContext(UserContext);
+    const { users, appointments, getappointment } = useContext(UserContext);
 
     const appointment = appointments?.find(item => item._id === id)
 
@@ -38,19 +38,23 @@ export function EditAppoinments() {
 
             } catch (error) {
 
-                if(error.response.state === 400){
+                if (!error.response) {
+
+                    alert("Network Error Pleass Try Again")
+
+                } else if (error.response.state === 400) {
 
                     alert(error.response.data.message)
 
-                }else if (error.response) {
+                } else if (error.response) {
 
                     alert(error.response.data.message)
 
-                }else{
-                    
+                } else {
+
                     alert("server error");
                 }
-                
+
             }
         }
     })

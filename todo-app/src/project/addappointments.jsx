@@ -32,8 +32,9 @@ export function Addappointments() {
                 navigate("/Dashboard/appointments")
 
             } catch (error) {
-
-                if (error.response) {
+                if (!error.response) {
+                    alert("Network Error Pleass Try Again")
+                } else if (error.response) {
                     alert(error.response.data.message)
                 } else {
                     alert("server error")

@@ -15,6 +15,7 @@ export function Register() {
     const [error, setError] = useState("")
     const [timer, setTimer] = useState(0)
     const [chek, setChek] = useState({})
+    const [loadding, setLoadding] = useState(false)
 
     useEffect(() => {
         if (timer <= 0) return
@@ -37,6 +38,7 @@ export function Register() {
         onSubmit: async (user) => {
 
             try {
+                setLoadding(true)
                 let res = await axios.post("https://full-stack-appointment-application.onrender.com/Register", user, { withCredentials: true })
 
                 alert(res.data.message)
@@ -55,8 +57,9 @@ export function Register() {
                 navigate("/Dashboard")
 
             } catch (error) {
-
-                if (error.response?.status === 429) {
+                if (!error.response) {
+                    alert("Network Error Pleass Try Again")
+                } else if (error.response?.status === 429) {
 
                     setError("Too many register attempts")
                     setTimer(10)
@@ -74,6 +77,8 @@ export function Register() {
                     alert("server error")
                 }
 
+            } finally {
+                setLoadding(false)
             }
         }
     })
@@ -82,9 +87,7 @@ export function Register() {
 
     const chekUser = async (field, value) => {
         try {
-            let res = await axios.get("https://full-stack-appointment-application.onrender.com/Register", {
-                params: { [field]: value }
-            });
+            let res = await axios.get("https://full-stack-appointment-application.onrender.com/Register", { params: { [field]: value } });
 
             if (field === "username") {
                 setChek(prev => ({ ...prev, userError: "", userMsg: res.data.message }));
@@ -93,7 +96,10 @@ export function Register() {
             }
         }
         catch (error) {
-            if (error.response?.status === 409) {
+            if (!error.response) {
+                alert("Network Error Pleass Try Again")
+            }
+            else if (error.response?.status === 409) {
                 if (field === "username") {
                     setChek(prev => ({ ...prev, userError: error.response.data.userError, userMsg: "" }));
                 } else if (field === "email") {
@@ -270,14 +276,28 @@ export function Register() {
                             </div>
                         )}
 
-                        {/* Submit */}
                         <button
                             type="submit"
                             className="btn btn-primary btn-lg w-100 fw-semibold"
+                            disabled={loadding}
                         >
-                            <i className="bi bi-person-plus-fill me-2"></i>
-                            Create Account
+                            {loadding ? (
+                                <>
+                                    <span
+                                        className="spinner-border spinner-border-sm me-2"
+                                        role="status"
+                                        aria-hidden="true"
+                                    ></span>
+                                    Loading...
+                                </>
+                            ) : (
+                                <>
+                                    <span className="bi bi-person-plus-fill me-2"></span>
+                                    Create Account
+                                </>
+                            )}
                         </button>
+
 
                         {/* Login */}
                         <div className="text-center mt-4">

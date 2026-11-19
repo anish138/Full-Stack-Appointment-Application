@@ -37,7 +37,9 @@ export function ProjectsAdd() {
                 resetForm();
                 navigate("/Dashboard/project");
             } catch (error) {
-                if (error.response) {
+                if (!error.response) {
+                    alert("Network Error Pleass Try Again")
+                } else if (error.response) {
                     alert(error.response.data.message);
                 } else {
                     alert("server error");

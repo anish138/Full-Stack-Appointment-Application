@@ -32,7 +32,9 @@ export function Project() {
                 setProjects(prev => prev.filter((p) => p._id !== id));
             }
         } catch (error) {
-            if (error.response) {
+            if (!error.response) {
+                alert("Network Error Pleass Try Again")
+            } else if (error.response) {
                 alert(error.response.data.message);
             } else {
                 alert("server error");
@@ -161,13 +163,12 @@ export function Project() {
                                                         {project.name}
                                                     </h5>
 
-                                                    <span className={`badge ${
-                                                        project.status === "In progress"
-                                                            ? "text-bg-success"
-                                                            : project.status === "Completed"
+                                                    <span className={`badge ${project.status === "In progress"
+                                                        ? "text-bg-success"
+                                                        : project.status === "Completed"
                                                             ? "text-bg-primary"
                                                             : "text-bg-warning"
-                                                    }`}>
+                                                        }`}>
                                                         {project.status || "Planning"}
                                                     </span>
                                                 </div>
@@ -183,9 +184,8 @@ export function Project() {
 
                                                 <div className="progress mb-3" style={{ height: "7px" }}>
                                                     <div
-                                                        className={`progress-bar ${
-                                                            (project.progress || 0) >= 100 ? "bg-success" : "bg-primary"
-                                                        }`}
+                                                        className={`progress-bar ${(project.progress || 0) >= 100 ? "bg-success" : "bg-primary"
+                                                            }`}
                                                         style={{ width: `${project.progress || 0}%` }}
                                                     ></div>
                                                 </div>

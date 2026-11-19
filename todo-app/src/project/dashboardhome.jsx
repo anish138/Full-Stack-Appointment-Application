@@ -33,7 +33,6 @@ export function DashboardHome() {
             if (setProjects) setProjects([]);
             if (setUsers) setUsers(null);
 
-            alert(res.data.message);
 
             navigate("/", { replace: true });
 
@@ -48,18 +47,25 @@ export function DashboardHome() {
             if (setProjects) setProjects([]);
             if (setUsers) setUsers(null);
 
-            if (error.response) {
+            if (!error.response) {
+                alert("Network Error Pleass Try Again")
+            } else if (!error.response) {
+                alert("Network Error Pleass Try Again")
+            }
+            else if (error.response) {
 
                 alert(error.response.data.message);
 
-            } else {
+            } else if (error.response.data.status === 200) {
 
+                navigate("/", { replace: true });
+
+            } else {
                 alert("server error");
             }
 
-            navigate("/", { replace: true });
 
-            window.location.reload()
+
         }
     };
 
@@ -142,19 +148,6 @@ export function DashboardHome() {
                     </div>
 
 
-                   
-
-                    <button className="btn btn-outline-primary">
-
-                        <span className="bi bi-gear-fill me-1"></span>
-
-                        Setting
-
-                    </button>
-
-
-                   
-
                     <button
                         className="btn btn-outline-primary"
                         onClick={SingOutClick}
@@ -167,37 +160,20 @@ export function DashboardHome() {
                     </button>
 
 
-                   
-
-                    <button
-                        className="btn btn-outline-primary"
-                        onClick={() => setToggle(!toggle)}
-                    >
-
-                        <span
-                            className={
-                                toggle
-                                    ? "bi bi-sun-fill"
-                                    : "bi bi-moon-fill"
-                            }
-                        ></span>
-
-                    </button>
-
                 </div>
 
             </div>
 
 
 
-          
+
 
             <div className="m-3">
 
                 <div className="row g-3">
 
 
-                
+
 
                     <div className="col-md-4">
 
@@ -273,7 +249,7 @@ export function DashboardHome() {
                     </div>
 
 
-                   
+
 
                     <div className="col-md-4">
 
@@ -329,7 +305,7 @@ export function DashboardHome() {
                     <div className="d-flex justify-content-between align-items-center">
 
 
-                       
+
 
                         <div className="d-flex align-items-center gap-3">
 
@@ -377,7 +353,7 @@ export function DashboardHome() {
                         </div>
 
 
-                        
+
 
                         <div>
 
@@ -397,7 +373,7 @@ export function DashboardHome() {
                             </button>
 
 
-                            
+
 
                             <div
                                 className="offcanvas offcanvas-end"

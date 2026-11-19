@@ -17,7 +17,9 @@ import { Notification } from "./notification";
 import { Report } from "./report";
 import { Help } from "./help";
 import { Calendar } from "./calendar";
+import { Setting } from "./setting";
 
+import "./mobile.css"
 
 
 const UserContext = createContext()
@@ -72,7 +74,7 @@ export function IndexContext() {
             description: "A simple workspace to help you organize projects, tasks, and appointments.",
             items: ["Stay organized", "Track progress", "Manage your schedule"]
         }
-    }; 
+    };
 
 
 
@@ -127,7 +129,9 @@ export function IndexContext() {
             setProjects(data);
             return data;
         } catch (error) {
-            if (error.response?.status === 404) {
+            if (!error.response) {
+                alert("Network Error Pleass Try Again")
+            } else if (error.response?.status === 404) {
                 setProjects([]);
                 return [];
             }
@@ -142,7 +146,6 @@ export function IndexContext() {
 
     const getusers = async (username) => {
 
-        console.log(username);
         if (!username) return null
         try {
             let res = await axios.get(`https://full-stack-appointment-application.onrender.com/User/${username}`, { withCredentials: true, })
@@ -150,7 +153,9 @@ export function IndexContext() {
             localStorage.setItem("user", JSON.stringify(res.data.users))
             return res.data.users
         } catch (error) {
-            if (error.response?.status === 401 || error.response?.status === 409) {
+            if (!error.response) {
+                alert("Network Error Pleass Try Again")
+            } else if (error.response?.status === 401 || error.response?.status === 409) {
                 clearSessionRef.current();
             } else if (error.response) {
                 alert(error.response.data.message)
@@ -180,7 +185,8 @@ export function IndexContext() {
 
     const delappointment = async (id) => {
 
-
+        const deleteapp = window.confirm("do you want to delete appointment")
+        if (!deleteapp) return;
 
         try {
             let res = await axios.delete(`https://full-stack-appointment-application.onrender.com/Appointment/${id}`, { withCredentials: true })
@@ -220,11 +226,7 @@ export function IndexContext() {
 
 
     return (
-        <div
-            className={`${toggle ? "bg-dark text-light" : "bg-light text-dark"} min-vh-100`}
-        >
-
-            {/* ================= HEADER ================= */}
+        <div className={`${toggle ? "bg-dark text-light" : "bg-light text-dark"} min-vh-100`} >
 
             {location.pathname.startsWith("/Dashboard") || (
 
@@ -269,7 +271,7 @@ export function IndexContext() {
 
 
                                 <div
-                                    className="d-flex align-items-center gap-2 position-relative"
+                                    className="d-flex align-items-center gap-2 position-relative desktop-menu"
                                     onMouseLeave={() => setActivePreview("")}
                                 >
 
@@ -315,20 +317,6 @@ export function IndexContext() {
 
                                     {/* Theme Button */}
 
-                                    <button
-                                        className="btn btn-outline-primary ms-2"
-                                        onClick={() => setToggle(!toggle)}
-                                    >
-
-                                        <span
-                                            className={
-                                                toggle
-                                                    ? "bi bi-sun-fill"
-                                                    : "bi bi-moon-fill"
-                                            }
-                                        ></span>
-
-                                    </button>
 
                                     {activePreview && previewContent[activePreview] && (
                                         <div
@@ -360,7 +348,7 @@ export function IndexContext() {
                     </nav>
 
 
-                   
+
 
                     <div
                         className={`${toggle
@@ -798,6 +786,8 @@ export function IndexContext() {
                         <Route path="editappointments/:id" element={<EditAppoinments />} />
 
                         <Route path="calendar" element={<Calendar />} />
+
+                        <Route path="setting" element={<Setting />} />
 
                     </Route>
 

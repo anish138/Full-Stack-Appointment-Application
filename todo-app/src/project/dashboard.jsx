@@ -10,7 +10,7 @@ export function Dashboard() {
 
     const navigate = useNavigate()
 
-    
+
 
     return (
         <div className={`${toggle ? "bg-dark text-light" : "bg-light text-dark"} min-vh-100`}>
@@ -74,7 +74,7 @@ export function Dashboard() {
                             <div
                                 className="d-flex align-items-center gap-3 px-3 py-3 rounded-3 mb-1"
                                 role="button"
-                                onClick={()=> navigate("/Dashboard")}
+                                onClick={() => navigate("/Dashboard")}
                             >
 
                                 <span className="bi bi-folder-fill fs-5"></span>
@@ -92,7 +92,7 @@ export function Dashboard() {
                             <div
                                 className="d-flex align-items-center gap-3 px-3 py-3 rounded-3 mb-1"
                                 role="button"
-                                onClick={()=> navigate("/Dashboard/calendar")}
+                                onClick={() => navigate("/Dashboard/calendar")}
                             >
 
                                 <span className="bi bi-calendar-date fs-5"></span>
@@ -108,8 +108,8 @@ export function Dashboard() {
                             <div
                                 className="d-flex align-items-center gap-3 px-3 py-3 rounded-3 mb-1"
                                 role="button"
-                                onClick={()=> navigate("/Dashboard/project")}
-                                
+                                onClick={() => navigate("/Dashboard/project")}
+
                             >
 
                                 <span className="bi bi-folder-fill fs-5"></span>
@@ -128,7 +128,7 @@ export function Dashboard() {
                             <div
                                 className="d-flex align-items-center gap-3 px-3 py-3 rounded-3 mb-1"
                                 role="button"
-                                onClick={()=>navigate("/Dashboard/task")}
+                                onClick={() => navigate("/Dashboard/task")}
                             >
 
                                 <span className="bi bi-pencil-square fs-5"></span>
@@ -145,10 +145,7 @@ export function Dashboard() {
                             <div
                                 className="d-flex align-items-center gap-3 px-3 py-3 rounded-3 mb-1"
                                 role="button"
-                                onClick={() =>
-                                    navigate("/Dashboard/addappointments")
-                                }
-                            >
+                                onClick={() => navigate("/Dashboard/addappointments")} >
 
                                 <span className="bi bi-calendar-plus fs-5"></span>
 
@@ -179,7 +176,7 @@ export function Dashboard() {
                             <div
                                 className="d-flex align-items-center justify-content-between px-3 py-3 rounded-3 mb-1"
                                 role="button"
-                                onClick={()=>navigate("/Dashboard/notification")}
+                                onClick={() => navigate("/Dashboard/notification")}
                             >
 
                                 <div className="d-flex align-items-center gap-3">
@@ -204,7 +201,7 @@ export function Dashboard() {
                             <div
                                 className="d-flex align-items-center gap-3 px-3 py-3 rounded-3 mb-1"
                                 role="button"
-                                onClick={()=>navigate("/Dashboard/report")}
+                                onClick={() => navigate("/Dashboard/report")}
                             >
 
                                 <span className="bi bi-bar-chart fs-5"></span>
@@ -216,12 +213,28 @@ export function Dashboard() {
                             </div>
 
 
+
+                            <div
+                                className="d-flex align-items-center gap-3 px-3 py-3 rounded-3 mb-1"
+                                role="button"
+                                onClick={() => navigate("/Dashboard/setting")}
+                            >
+
+                                <span className="bi bi-gear fs-5"></span>
+
+                                <span>
+                                    Setting
+                                </span>
+
+                            </div>
+
+
                             {/* Help */}
 
                             <div
                                 className="d-flex align-items-center gap-3 px-3 py-3 rounded-3 mb-1"
                                 role="button"
-                                onClick={()=>navigate("/Dashboard/help")}
+                                onClick={() => navigate("/Dashboard/help")}
                             >
 
                                 <span className="bi bi-question-circle fs-5"></span>

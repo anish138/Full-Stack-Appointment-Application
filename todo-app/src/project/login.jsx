@@ -14,6 +14,7 @@ export function Login() {
     const [show, setShow] = useState(true)
     const [error, setError] = useState("")
     const [timer, setTimer] = useState(0)
+    const [loadding, setLoadding] = useState(false);
 
 
     useEffect(() => {
@@ -38,8 +39,8 @@ export function Login() {
             try {
 
                 const currentusername = user.username
+                setLoadding(true)
                 let res = await axios.post("https://full-stack-appointment-application.onrender.com/User", { username: user.username, password: user.password }, { withCredentials: true })   //{withCredentials:true}  har request me cookies jayegai ab  
-
                 alert(res.data.message);
 
                 localStorage.removeItem("user");
@@ -57,20 +58,18 @@ export function Login() {
 
                 navigate("/Dashboard", { replace: true })
             } catch (error) {
-
-                if (error.response?.status === 429) {
+                if (!error.response) {
+                    alert("Network Error Pleass Try Again")
+                } else if (error.response?.status === 429) {
                     setError("Too many login attempts")
                     setTimer(30)
-
-
                 } else if (error.response) {
-
                     alert(error.response.data.message)
-
-
                 } else {
                     alert("server error")
                 }
+            } finally {
+                setLoadding(false)
             }
         }
     })
@@ -208,15 +207,21 @@ export function Login() {
                 </div>
 
 
-                {/* Submit */}
-
                 <button
                     type="submit"
                     className="btn btn-primary w-100 py-2 fw-semibold"
-                    disabled={timer > 0}
+                    disabled={loadding || timer > 0}
                 >
-
-                    {timer > 0 ? (
+                    {loadding ? (
+                        <>
+                            <span
+                                className="spinner-border spinner-border-sm me-2"
+                                role="status"
+                                aria-hidden="true"
+                            ></span>
+                            Loading...
+                        </>
+                    ) : timer > 0 ? (
                         <>
                             <span className="bi bi-clock me-2"></span>
                             Try again in {timer}s
@@ -227,11 +232,8 @@ export function Login() {
                             Login
                         </>
                     )}
-
                 </button>
 
-
-                {/* Register */}
 
                 <div className="text-center mt-3">
 
