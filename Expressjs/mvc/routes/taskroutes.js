@@ -6,8 +6,8 @@ import { verifytoken } from "../middleware/middleware.js";
 const taskroute = express.Router();
 
 taskroute.get("/Task", GetAllTasks);
-taskroute.post("/Task",verifytoken, CreateTask);
-taskroute.patch("/Task/:id",verifytoken, UpdateTask);
-taskroute.delete("/Task/:id",verifytoken, DeleteTask);
+taskroute.post("/Task", CreateTask);
+taskroute.patch("/Task/:id", UpdateTask);
+taskroute.delete("/Task/:id", DeleteTask);
 
 export default taskroute;

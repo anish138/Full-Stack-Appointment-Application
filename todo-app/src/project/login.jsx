@@ -1,6 +1,6 @@
 import axios from "axios"
 import { useFormik } from "formik"
-import { useEffect,useState,useContext } from "react";
+import { useEffect, useState, useContext } from "react";
 import { Link, useNavigate } from "react-router-dom"
 import UserContext from "./indexcontext";
 
@@ -36,11 +36,11 @@ export function Login() {
         },
         onSubmit: async (user, resert) => {
             try {
+
+                const currentusername = user.username
                 let res = await axios.post("https://full-stack-appointment-application.onrender.com/User", { username: user.username, password: user.password }, { withCredentials: true })   //{withCredentials:true}  har request me cookies jayegai ab  
 
                 alert(res.data.message);
-
-                resert.resetForm();
 
                 localStorage.removeItem("user");
                 localStorage.removeItem("appointments");
@@ -49,9 +49,11 @@ export function Login() {
                 if (setProjects) setProjects([]);
                 if (setUsers) setUsers(null);
 
-                await getusers(user.username);
-                await getappointment(user.username);
-                if (getprojects) await getprojects(user.username);
+                await getusers(currentusername);
+                await getappointment(currentusername);
+                if (getprojects) await getprojects(currentusername);
+
+                resert.resetForm();
 
                 navigate("/Dashboard", { replace: true })
             } catch (error) {
@@ -78,7 +80,7 @@ export function Login() {
 
             <form
                 onSubmit={formik.handleSubmit}
-               
+
             >
 
                 {/* Heading */}

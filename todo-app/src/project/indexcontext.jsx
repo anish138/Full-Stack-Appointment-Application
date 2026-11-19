@@ -141,9 +141,11 @@ export function IndexContext() {
     };
 
     const getusers = async (username) => {
+
+        console.log(username);
         if (!username) return null
         try {
-            let res = await axios.get(`https://full-stack-appointment-application.onrender.com/User/${username}`, { withCredentials: true })
+            let res = await axios.get(`https://full-stack-appointment-application.onrender.com/User/${username}`, { withCredentials: true, })
             setUsers(res.data.users)
             localStorage.setItem("user", JSON.stringify(res.data.users))
             return res.data.users

@@ -52,28 +52,37 @@ const SingOutUser = async (req, res) => {
 const GetUser = async (req, res) => {
     try {
 
-        const username = req.params.id
-
-        console.log(username)
-
-        const data = await LoginUser.findOne({ username: username })
+        const username = req.params.id;
+        
+        const data = await LoginUser.findOne({ username: username }).select("-password");
 
         console.log(data)
-
+        
         if (!data) {
-            return res.status(404).json({ message: "user is not found" })
+            return res.status(404).json({
+                message: "User is not found"
+            });
         }
-
+        
         if (req.cookies.username !== data.username) {
-            return res.status(401).json({ message: "unauthorized user" })
+            return res.status(401).json({
+                message: "Unauthorized user"
+            });
         }
 
-        res.status(200).json({ users: data })
+        return res.status(200).json({
+            users: data
+        });
+        
+
     } catch (error) {
 
-        res.status(500).json({ message: error.message })
+        return res.status(500).json({
+            message: error.message
+        });
+
     }
-}
+};
 
 
 
