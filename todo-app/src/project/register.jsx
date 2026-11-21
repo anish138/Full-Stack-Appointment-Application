@@ -41,8 +41,6 @@ export function Register() {
                 setLoadding(true)
                 let res = await axios.post("https://full-stack-appointment-application.onrender.com/Register", user, { withCredentials: true })
 
-                alert(res.data.message)
-
                 localStorage.removeItem("user");
                 localStorage.removeItem("appointments");
                 localStorage.removeItem("projects");
@@ -85,58 +83,105 @@ export function Register() {
 
 
 
+
     const chekUser = async (field, value) => {
         try {
-            let res = await axios.get("https://full-stack-appointment-application.onrender.com/Register", { params: { [field]: value } });
+            let res = await axios.get(
+                "https://full-stack-appointment-application.onrender.com/Register",
+                {
+                    params: { [field]: value }
+                }
+            );
+
+            let data = res.data;
+
+            console.log(data)
 
             if (field === "username") {
-                setChek(prev => ({ ...prev, userError: "", userMsg: res.data.message }));
-            } else if (field === "email") {
-                setChek(prev => ({ ...prev, emailError: "", emailMsg: res.data.message }));
+                setChek(prev => ({
+                    ...prev,
+                    userError: "",
+                    userMsg: data.message
+                }));
             }
-        }
-        catch (error) {
-            if (!error.response) {
-                alert("Network Error Pleass Try Again")
+            else if (field === "email") {
+                setChek(prev => ({
+                    ...prev,
+                    emailError: "",
+                    emailMsg: data.message
+                }));
             }
-            else if (error.response?.status === 409) {
+
+        } catch (error) {
+
+            let data = error.response?.data;
+
+            if (error.response?.status === 400 ||
+                error.response?.status === 409) {
+
                 if (field === "username") {
-                    setChek(prev => ({ ...prev, userError: error.response.data.userError, userMsg: "" }));
-                } else if (field === "email") {
-                    setChek(prev => ({ ...prev, emailError: error.response.data.emailError, emailMsg: "" }));
+                    setChek(prev => ({
+                        ...prev,
+                        userError: data.userError || "",
+                        userMsg: ""
+                    }));
                 }
+                else if (field === "email") {
+                    setChek(prev => ({
+                        ...prev,
+                        emailError: data.emailError || "",
+                        emailMsg: ""
+                    }));
+                }
+
             } else if (!error.response) {
                 setError("Unable to check availability. Please try again.");
             }
         }
-    }
+    };
+
 
     // Debounce for Username (500ms rukne ke baad API call hogi)
     useEffect(() => {
-        if (!formik.values.username.trim()) {
-            setChek(prev => ({ ...prev, userError: "", userMsg: "" }));
+        const username = formik.values.username.trim();
+
+
+        if (!username) {
+            setChek(prev => ({
+                ...prev,
+                userError: "",
+                userMsg: ""
+            }));
             return;
         }
 
         const timer = setTimeout(() => {
-            chekUser("username", formik.values.username);
-        }, 500);
+            chekUser("username", username);
+        }, 1000);
 
         return () => clearTimeout(timer);
+
     }, [formik.values.username]);
 
-    // Debounce for Email (500ms rukne ke baad API call hogi)
+    // Debounce for Email (1000ms rukne ke baad API call hogi)
     useEffect(() => {
-        if (!formik.values.email.trim()) {
-            setChek(prev => ({ ...prev, emailError: "", emailMsg: "" }));
+        const email = formik.values.email.trim();
+
+        if (!email) {
+            setChek(prev => ({
+                ...prev,
+                emailError: "",
+                emailMsg: ""
+            }));
             return;
         }
 
         const timer = setTimeout(() => {
-            chekUser("email", formik.values.email);
-        }, 500);
+            chekUser("email", email);
+        }, 1000);
 
         return () => clearTimeout(timer);
+
     }, [formik.values.email]);
 
 
@@ -205,7 +250,7 @@ export function Register() {
                                 placeholder="Enter username"
                                 required
                             />
-                            <span className={`${chek?.userError ? "text-danger" : "text-success"}`} id="usererror">
+                            <span  className={`${chek?.userError ? "text-danger" : "text-success"}`} id="usererror">
                                 {chek?.userError ? chek?.userError : chek?.userMsg}
                             </span>
                         </div>
@@ -226,7 +271,7 @@ export function Register() {
                                 placeholder="Enter email address"
                                 required
                             />
-                            <span className={`${chek?.emailError ? "text-danger" : "text-success"}`} id="emerror">
+                            <span  className={`${chek?.emailError ? "text-danger" : "text-success"}`} id="emerror">
                                 {chek?.emailError ? chek?.emailError : chek?.emailMsg}
                             </span>
                         </div>
@@ -279,7 +324,7 @@ export function Register() {
                         <button
                             type="submit"
                             className="btn btn-primary btn-lg w-100 fw-semibold"
-                            disabled={loadding}
+                            disabled={loadding || timer > 0}
                         >
                             {loadding ? (
                                 <>

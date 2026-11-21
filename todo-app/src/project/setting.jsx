@@ -6,7 +6,7 @@ export function Setting() {
 
   return (
     <div className="container-fluid p-4">
-      <h1 className="fw-bold mb-4">⚙️ Settings</h1>
+      <h1 className="fw-bold mb-4">Settings</h1>
 
       <div className="row g-4">
 

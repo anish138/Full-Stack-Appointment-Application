@@ -6,41 +6,86 @@ import { cookieadd } from "./cookiecontroller.js";
 // USER register
 
 
+
 const verifydata = async (req, res) => {
-
     try {
+        const { email, username } = req.query;
 
-        const { email, username } = req.query
+        const Regex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
 
-
-        if (username) {
-
-            const verifyuser = await LoginUser.findOne({ username: username })
-
-            if (verifyuser) {
-                return res.status(409).json({ userError: "username is not available" })
-            } else {
-                return res.status(200).json({ message: "Available" })
-            }
-
+        if (!email && !username) {
+            return res.status(400).json({
+                message: "Email or username is required"
+            });
         }
 
         if (email) {
 
-            const verifyemail = await LoginUser.findOne({ email: email })
+            if (email.length > 224) {
+                return res.status(400).json({
+                    emailError: "Email cannot exceed 224 characters"
+                });
+            }
+
+            if (!Regex.test(email)) {
+                return res.status(400).json({
+                    emailError: "Please enter a valid email address"
+                });
+            }
+
+            const verifyemail = await LoginUser.findOne({
+                email: email.trim()
+            });
 
             if (verifyemail) {
-                return res.status(409).json({ emailError: "your email is alredy exists pleass login" })
-            } else {
-                return res.status(200).json({ message: "Available" })
+                return res.status(409).json({
+                    emailError: "Your email already exists. Please login"
+                });
+            }
+
+            return res.status(200).json({
+                message: "Email Available"
+            });
+        }
+
+        if (username) {
+
+            const cleanUsername = username.trim();
+
+            if (cleanUsername.length < 4) {
+                return res.status(400).json({
+                    userError: "Username must be at least 4 characters long"
+                });
+            }
+
+            if (cleanUsername.length > 30) {
+                return res.status(400).json({
+                    userError: "Username cannot exceed 30 characters"
+                });
+            }
+
+            const verifyuser = await LoginUser.findOne({
+                username: cleanUsername
+            });
+
+            if (verifyuser) {
+                return res.status(409).json({
+                    userError: "Username is not available"
+                });
             }
         }
 
+        return res.status(200).json({
+            message: "Username Available"
+        });
+
+    } catch (error) {
+        return res.status(500).json({
+            message: "Internal server error"
+        });
     }
-    catch (error) {
-        return res.status(500).json({ message: error.message })
-    }
-}
+};
+
 
 
 
@@ -49,8 +94,20 @@ const postRegister = async (req, res) => {
     try {
         const { name, username, email, password } = req.body
 
+        const Regex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/
+
         if (!name || !username || !email || !password)
             return res.status(400).json({ message: "name,email,username,password is not provided" })
+
+        if (name.length < 4) {
+            return res.status(400).json({ namemsg: "Name must be at least for charecters long" })
+        } else if (name.length > 30) {
+            return res.status(400).json({ namemsg: "Name cannot excees thirty characters" })
+        } else if (password.length > 30) {
+            return res.status(400).json({ passmessage: "Username cannot excees thirty characters" })
+        } else if (!Regex.test(password)) {
+            return res.status(404).json({ passmessage: "Password must be at least 8 characters long and include an uppercase letter, a lowercase letter, a number, and a special character" })
+        }
 
         const hasspassword = await hassingPassword(password)
 

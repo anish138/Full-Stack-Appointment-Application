@@ -41,7 +41,7 @@ export function Login() {
                 const currentusername = user.username
                 setLoadding(true)
                 let res = await axios.post("https://full-stack-appointment-application.onrender.com/User", { username: user.username, password: user.password }, { withCredentials: true })   //{withCredentials:true}  har request me cookies jayegai ab  
-                alert(res.data.message);
+                
 
                 localStorage.removeItem("user");
                 localStorage.removeItem("appointments");
