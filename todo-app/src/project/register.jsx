@@ -16,6 +16,7 @@ export function Register() {
     const [timer, setTimer] = useState(0)
     const [chek, setChek] = useState({})
     const [loadding, setLoadding] = useState(false)
+    const [validation,setValidation] = useState({})
 
     useEffect(() => {
         if (timer <= 0) return
@@ -25,6 +26,9 @@ export function Register() {
         }, 1000)
         return () => clearInterval(interval)
     }, [timer])
+
+
+    
 
 
 
@@ -40,6 +44,10 @@ export function Register() {
             try {
                 setLoadding(true)
                 let res = await axios.post("https://full-stack-appointment-application.onrender.com/Register", user, { withCredentials: true })
+
+                const data = res.data
+
+                console.log(data);
 
                 localStorage.removeItem("user");
                 localStorage.removeItem("appointments");
@@ -80,7 +88,6 @@ export function Register() {
             }
         }
     })
-
 
 
 
@@ -141,7 +148,7 @@ export function Register() {
     };
 
 
-    // Debounce for Username (500ms rukne ke baad API call hogi)
+
     useEffect(() => {
         const username = formik.values.username.trim();
 
@@ -163,7 +170,7 @@ export function Register() {
 
     }, [formik.values.username]);
 
-    // Debounce for Email (1000ms rukne ke baad API call hogi)
+
     useEffect(() => {
         const email = formik.values.email.trim();
 
@@ -183,6 +190,7 @@ export function Register() {
         return () => clearTimeout(timer);
 
     }, [formik.values.email]);
+
 
 
 
@@ -223,6 +231,7 @@ export function Register() {
                             </label>
 
                             <input
+                                id="nameer"
                                 type="text"
                                 className="form-control form-control-lg"
                                 name="name"
@@ -231,6 +240,8 @@ export function Register() {
                                 placeholder="Enter your name"
                                 required
                             />
+
+                            <span id="nameerror" style={{color:"red"}}></span>
 
                         </div>
 
@@ -250,7 +261,7 @@ export function Register() {
                                 placeholder="Enter username"
                                 required
                             />
-                            <span  className={`${chek?.userError ? "text-danger" : "text-success"}`} id="usererror">
+                            <span className={`${chek?.userError ? "text-danger" : "text-success"}`} id="usererror">
                                 {chek?.userError ? chek?.userError : chek?.userMsg}
                             </span>
                         </div>
@@ -271,7 +282,7 @@ export function Register() {
                                 placeholder="Enter email address"
                                 required
                             />
-                            <span  className={`${chek?.emailError ? "text-danger" : "text-success"}`} id="emerror">
+                            <span className={`${chek?.emailError ? "text-danger" : "text-success"}`} id="emerror">
                                 {chek?.emailError ? chek?.emailError : chek?.emailMsg}
                             </span>
                         </div>
@@ -285,6 +296,7 @@ export function Register() {
 
                             <div className="input-group input-group-lg">
                                 <input
+                                    id="passworder"
                                     type={show ? "password" : "text"}
                                     className="form-control"
                                     name="password"
@@ -293,7 +305,7 @@ export function Register() {
                                     placeholder="Enter password"
                                     required
                                 />
-
+                                <span id="passworderror"  style={{color:"red"}}></span>
                                 <span
                                     className={`input-group-text ${show ? "bi bi-eye-slash" : "bi bi-eye"}`}
                                     style={{ cursor: "pointer" }}

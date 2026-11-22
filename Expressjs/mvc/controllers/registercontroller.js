@@ -97,7 +97,7 @@ const postRegister = async (req, res) => {
         const Regex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/
 
         if (!name || !username || !email || !password)
-            return res.status(400).json({ message: "name,email,username,password is not provided" })
+            return res.status(400).json({ message: "all filed are required" })
 
         if (name.length < 4) {
             return res.status(400).json({ namemsg: "Name must be at least for charecters long" })
@@ -106,7 +106,7 @@ const postRegister = async (req, res) => {
         } else if (password.length > 30) {
             return res.status(400).json({ passmessage: "Username cannot excees thirty characters" })
         } else if (!Regex.test(password)) {
-            return res.status(404).json({ passmessage: "Password must be at least 8 characters long and include an uppercase letter, a lowercase letter, a number, and a special character" })
+            return res.status(400).json({ passmessage: "Password must be at least 8 characters long and include an uppercase letter, a lowercase letter, a number, and a special character" })
         }
 
         const hasspassword = await hassingPassword(password)
