@@ -54,7 +54,7 @@ const verifydata = async (req, res) => {
 
             const cleanUsername = username.trim();
 
-            if (usernameregex.test(cleanUsername)) {
+            if (!usernameregex.test(cleanUsername)) {
                 return res.status(400).json({
                     userError: "Username must be 4-30 characters long and contain only letters, numbers, and underscores"
                 });
