@@ -16,7 +16,7 @@ export function Register() {
     const [timer, setTimer] = useState(0)
     const [chek, setChek] = useState({})
     const [loadding, setLoadding] = useState(false)
-    const [validation,setValidation] = useState({})
+    const [validation, setValidation] = useState({})
 
     useEffect(() => {
         if (timer <= 0) return
@@ -28,7 +28,7 @@ export function Register() {
     }, [timer])
 
 
-    
+
 
 
 
@@ -44,10 +44,6 @@ export function Register() {
             try {
                 setLoadding(true)
                 let res = await axios.post("https://full-stack-appointment-application.onrender.com/Register", user, { withCredentials: true })
-
-                const data = res.data
-
-                console.log(data);
 
                 localStorage.removeItem("user");
                 localStorage.removeItem("appointments");
@@ -76,9 +72,12 @@ export function Register() {
                         userError: error.response.data.userError || ""
                     })
 
-                } else if (error.response) {
-                    alert(error.response.data.message)
+                } else if (error.response?.status === 400) {
 
+                    setValidation((prev)=>({...prev,namemsg:error.response.data.namemsg || "",passmessage:error.response.data.passmessage || ""}))
+
+                } else if (error.response.data.message) {
+                    alert(error.response.data.message)
                 } else {
                     alert("server error")
                 }
@@ -236,12 +235,13 @@ export function Register() {
                                 className="form-control form-control-lg"
                                 name="name"
                                 value={formik.values.name}
-                                onChange={formik.handleChange}
+                                onChange={(e) => { formik.handleChange(e); setValidation(prev=>({...prev,namemsg:""})) }}
                                 placeholder="Enter your name"
                                 required
                             />
 
-                            <span id="nameerror" style={{color:"red"}}></span>
+                            
+                            {validation.namemsg && (<p className="text-danger">{validation.namemsg}</p>)} 
 
                         </div>
 
@@ -296,21 +296,22 @@ export function Register() {
 
                             <div className="input-group input-group-lg">
                                 <input
-                                    id="passworder"
                                     type={show ? "password" : "text"}
                                     className="form-control"
                                     name="password"
                                     value={formik.values.password}
-                                    onChange={formik.handleChange}
+                                    onChange={(e) => { formik.handleChange(e); setValidation(prev=>({...prev,passmessage:""})) }}
                                     placeholder="Enter password"
                                     required
                                 />
-                                <span id="passworderror"  style={{color:"red"}}></span>
+                                
                                 <span
                                     className={`input-group-text ${show ? "bi bi-eye-slash" : "bi bi-eye"}`}
                                     style={{ cursor: "pointer" }}
                                     onClick={() => setShow(!show)}
                                 ></span>
+
+                                {validation.passmessage && (<p className="text-danger">{validation.passmessage}</p>)} 
                             </div>
                         </div>
 

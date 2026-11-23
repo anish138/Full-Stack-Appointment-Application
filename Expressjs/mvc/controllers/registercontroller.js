@@ -13,6 +13,8 @@ const verifydata = async (req, res) => {
 
         const Regex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
 
+        const usernameregex = /^[a-zA-Z0-9_]{4,30}$/
+
         if (!email && !username) {
             return res.status(400).json({
                 message: "Email or username is required"
@@ -52,17 +54,12 @@ const verifydata = async (req, res) => {
 
             const cleanUsername = username.trim();
 
-            if (cleanUsername.length < 4) {
+            if (usernameregex.test(cleanUsername)) {
                 return res.status(400).json({
-                    userError: "Username must be at least 4 characters long"
+                    userError: "Username must be 4-30 characters long and contain only letters, numbers, and underscores"
                 });
             }
 
-            if (cleanUsername.length > 30) {
-                return res.status(400).json({
-                    userError: "Username cannot exceed 30 characters"
-                });
-            }
 
             const verifyuser = await LoginUser.findOne({
                 username: cleanUsername
@@ -94,25 +91,31 @@ const postRegister = async (req, res) => {
     try {
         const { name, username, email, password } = req.body
 
+        const error = {};
+
         const Regex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/
 
         if (!name || !username || !email || !password)
             return res.status(400).json({ message: "all filed are required" })
 
-        if (name.length < 4) {
-             res.status(400).json({ namemsg: "Name must be at least for charecters long" })
+        if (name.trim().length < 4) {
+             error.namemsg = "Name must be at least for charecters long"
         } 
         
         if (name.length > 30) {
-             res.status(400).json({ namemsg: "Name cannot excees thirty characters" })
+             error.namemsg =  "Name cannot excees thirty characters"
         } 
         
         if (password.length > 30) {
-             res.status(400).json({ passmessage: "Username cannot excees thirty characters" })
+             error.passmessage = "Username cannot excees thirty characters"
         } 
         
         if (!Regex.test(password)) {
-            return res.status(400).json({ passmessage: "Password must be at least 8 characters long and include an uppercase letter, a lowercase letter, a number, and a special character" })
+            error.passmessage = "Password must be at least 8 characters long and include an uppercase letter, a lowercase letter, a number, and a special character"
+        }
+
+        if(Object.keys(error).length > 0){
+            return res.status(400).json(error)
         }
 
         const hasspassword = await hassingPassword(password)
