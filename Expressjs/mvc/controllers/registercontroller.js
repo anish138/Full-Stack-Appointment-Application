@@ -100,11 +100,11 @@ const postRegister = async (req, res) => {
             return res.status(400).json({ message: "all filed are required" })
 
         if (name.length < 4) {
-            return res.status(400).json({ namemsg: "Name must be at least for charecters long" })
+             res.status(400).json({ namemsg: "Name must be at least for charecters long" })
         } else if (name.length > 30) {
-            return res.status(400).json({ namemsg: "Name cannot excees thirty characters" })
+             res.status(400).json({ namemsg: "Name cannot excees thirty characters" })
         } else if (password.length > 30) {
-            return res.status(400).json({ passmessage: "Username cannot excees thirty characters" })
+             res.status(400).json({ passmessage: "Username cannot excees thirty characters" })
         } else if (!Regex.test(password)) {
             return res.status(400).json({ passmessage: "Password must be at least 8 characters long and include an uppercase letter, a lowercase letter, a number, and a special character" })
         }
